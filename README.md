@@ -43,6 +43,9 @@ Algorithms: Quick Sort, Merge Sort, Linear Search, Binary Search
 File Handling: Text/CSV file storage for persistent data
 
 **Group Members**
+
 Sahil Kumar Valecha
+
 Saleena Ahuja
+
 Paras Parveen
