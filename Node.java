@@ -18,6 +18,7 @@ public class Node {
         this.  PatientHealthIusse = PatientHealthIusse;
         this.next = null;
     }
+
 }
 
 class PatientManagement{

@@ -19,6 +19,7 @@ public class Main {
             int choice = scanner.nextInt();
             scanner.nextLine();
 
+
             switch (choice) {
                 case 1:
                     System.out.print("Enter Patient Name: ");
