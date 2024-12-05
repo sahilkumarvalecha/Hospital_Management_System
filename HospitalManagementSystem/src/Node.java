@@ -1,21 +1,19 @@
 import java.io.*;
 
 public class Node {
-
-
     String PatientName ;
     int PatientAge;
     int PatientPhoneNUM;
     String PatientGender;
-    String PatientHealthIusse;
+    String PatientHealthIssue;
     Node next;
 
-    public Node(String PatientName, int PatientAge, int PatientPhoneNUM, String PatientGender, String PatientHealthIusse) {
-       this.PatientName = PatientName;
-        this.  PatientAge = PatientAge;
-        this.  PatientPhoneNUM = PatientPhoneNUM;
-        this. PatientGender = PatientGender;
-        this.  PatientHealthIusse = PatientHealthIusse;
+    public Node(String PatientName, int PatientAge, int PatientPhoneNUM, String PatientGender, String PatientHealthIssue) {
+        this.PatientName = PatientName;
+        this.PatientAge = PatientAge;
+        this.PatientPhoneNUM = PatientPhoneNUM;
+        this.PatientGender = PatientGender;
+        this.PatientHealthIssue = PatientHealthIssue;
         this.next = null;
     }
 
@@ -27,20 +25,20 @@ class PatientManagement{
     public PatientManagement() {
         this.head = null;
     }
-     public boolean IsEmpty(){
+    public boolean IsEmpty(){
         if(head == null){
-           return  true;
+            return  true;
         }
         return false;
-     }
-    public void insertPatient(String PatientName, int PatientAge, int PatientPhoneNUM, String PatientGender, String PatientHealthIusse){
-        Node newnode = new Node(PatientName,PatientAge,PatientPhoneNUM,PatientGender,PatientHealthIusse);
+    }
+    public void insertPatient(String PatientName, int PatientAge, int PatientPhoneNUM, String PatientGender, String PatientHealthIssue){
+        Node newnode = new Node(PatientName,PatientAge,PatientPhoneNUM,PatientGender,PatientHealthIssue);
         if(IsEmpty()){
             head = newnode;
         }
         else{
             newnode.next = head;
-               head=newnode;
+            head=newnode;
         }
 
     }
@@ -66,7 +64,7 @@ class PatientManagement{
                         ", Age: " + current.PatientAge +
                         ", Phone: " + current.PatientPhoneNUM +
                         ", Gender: " + current.PatientGender +
-                        ", Health Issue: " + current.PatientHealthIusse);
+                        ", Health Issue: " + current.PatientHealthIssue);
             }
             current = current.next; // Move to the next node
         }
@@ -155,7 +153,7 @@ class PatientManagement{
             System.out.println("No patients in the list.");
             return;
         }
-                Node current = head;
+        Node current = head;
 
         System.out.println("Patient List With Sorted:");
         while (current != null) {
@@ -164,16 +162,16 @@ class PatientManagement{
                             ", Age: " + current.PatientAge +
                             ", Phone: " + current.PatientPhoneNUM +
                             ", Gender: " + current.PatientGender +
-                            ", Health Issue: " + current.PatientHealthIusse);
+                            ", Health Issue: " + current.PatientHealthIssue);
 
-                           current = current.next; // Move to the next node
+            current = current.next; // Move to the next node
         }
     }
     public void savePatientsToFile(String filename) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
             Node current = head;
             while (current != null) {
-                writer.write(current.PatientName + "," + current.PatientAge + "," + current.PatientPhoneNUM + "," + current.PatientGender + "," + current.PatientHealthIusse);
+                writer.write(current.PatientName + "," + current.PatientAge + "," + current.PatientPhoneNUM + "," + current.PatientGender + "," + current.PatientHealthIssue);
                 writer.newLine();
                 current = current.next;
             }
@@ -199,4 +197,3 @@ class PatientManagement{
         }
     }
 }
-
