@@ -1,19 +1,19 @@
 import java.io.*;
 
 public class Node {
-    String PatientName ;
-    int PatientAge;
-    int PatientPhoneNUM;
-    String PatientGender;
-    String PatientHealthIssue;
-    Node next;
+     String PatientName ;
+     int PatientAge;
+     String PatientPhoneNUM;
+     String PatientGender;
+     String PatientHealthIssue;
+     Node next;
 
-    public Node(String PatientName, int PatientAge, int PatientPhoneNUM, String PatientGender, String PatientHealthIssue) {
+    public Node(String PatientName, int PatientAge, String PatientPhoneNUM, String PatientGender, String PatientHealthIssue) {
         this.PatientName = PatientName;
         this.PatientAge = PatientAge;
         this.PatientPhoneNUM = PatientPhoneNUM;
         this.PatientGender = PatientGender;
-        this.PatientHealthIssue = PatientHealthIssue;
+        this.PatientHealthIssue = (PatientHealthIssue == null || PatientHealthIssue.isEmpty()) ? "unKnown" : PatientHealthIssue;
         this.next = null;
     }
 
@@ -25,15 +25,15 @@ class PatientManagement{
     public PatientManagement() {
         this.head = null;
     }
-    public boolean IsEmpty(){
+    public boolean isEmpty(){
         if(head == null){
             return  true;
         }
         return false;
     }
-    public void insertPatient(String PatientName, int PatientAge, int PatientPhoneNUM, String PatientGender, String PatientHealthIssue){
+    public void insertPatient(String PatientName, int PatientAge, String PatientPhoneNUM, String PatientGender, String PatientHealthIssue){
         Node newnode = new Node(PatientName,PatientAge,PatientPhoneNUM,PatientGender,PatientHealthIssue);
-        if(IsEmpty()){
+        if(isEmpty()){
             head = newnode;
         }
         else{
@@ -44,7 +44,7 @@ class PatientManagement{
     }
 
     public void SearchPatient(String patientName) {
-        if (IsEmpty()) {
+        if (isEmpty()) {
             System.out.println("The list is empty. Patient not found.");
             return;
         }
@@ -54,7 +54,7 @@ class PatientManagement{
 
         System.out.println("Searching for patient: " + patientName);
         while (current != null) {
-            if (current.PatientName.equals(patientName)) { // Case-insensitive match
+            if (current.PatientName.equalsIgnoreCase(patientName)) { // Case-insensitive match
                 if (!found) {
                     System.out.println("Patient(s) found with the name: " + patientName);
                     found = true;
@@ -145,11 +145,8 @@ class PatientManagement{
 
         return left;
     }
-
-
-
     public void DisplayDataOfPatient(){
-        if (IsEmpty()) {
+        if (isEmpty()) {
             System.out.println("No patients in the list.");
             return;
         }
@@ -181,6 +178,9 @@ class PatientManagement{
             e.printStackTrace();
         }
     }
+    private boolean isNumeric(String str) {
+        return str.matches("\\d+"); // Matches only digits
+    }
 
     // Load patients from a file
     public void loadPatientsFromFile(String filename) {
@@ -188,11 +188,19 @@ class PatientManagement{
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] patientData = line.split(",");
-                insertPatient(patientData[0], Integer.parseInt(patientData[1]), Integer.parseInt(patientData[2]), patientData[3], patientData[4]);
+                if (patientData.length == 5 && isNumeric(patientData[2])) {
+                    insertPatient(patientData[0], Integer.parseInt(patientData[1]), patientData[2], patientData[3], patientData[4]);
+                }else {
+                    System.out.println("Skipping invalid data: " + line);
+                }
             }
             System.out.println("Patient data loaded from file.");
         } catch (IOException e) {
             System.out.println("An error occurred while loading patient data.");
+            e.printStackTrace();
+        }
+        catch (NumberFormatException e) {
+            System.out.println("Data format in file is incorrect.");
             e.printStackTrace();
         }
     }

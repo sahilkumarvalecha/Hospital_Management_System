@@ -4,11 +4,11 @@ public class Doctor {
     String specialization;
     String[] availability;
     int Number;
-    Doctor(int id, String doctorName, String specialization, int number) {
+    Doctor(int id, String doctorName, String specialization, String[] availability, int number) {
         this.id = id;
         this.doctorName = doctorName;
         this.specialization = specialization;
-        this.availability = new String[2];
+        this.availability = availability;
         Number = number;
     }
 }
@@ -16,28 +16,53 @@ class doctorManagement{
     Doctor[] doctors;
     int count;
     doctorManagement(){
-        doctors = new Doctor[1];
+        doctors = new Doctor[10];
         count = 0;
     }
+    private boolean isUniqueId(int id){
+        for (Doctor doc : doctors){
+            if (doc!= null && doc.id == id){
+                return false; // not unique
+            }
+        }
+        return true; // id unique
+    }
+    private boolean isUniqueNumber(int number){
+        for (Doctor doc : doctors){
+            if (doc!= null && doc.Number == number){
+                return false; // not unique
+            }
+        }
+        return true; // number unique
+    }
+
     public void resize(){
 
-        Doctor[] temp = new Doctor[doctors.length + 1];
+        Doctor[] temp = new Doctor[doctors.length + 10];
         for (int i=0; i<doctors.length; i++){
             temp[i] = doctors[i];
         }
         doctors = temp;
     }
     public void addDoctor(int id, String name, String specialization, String[] availability, int number){
+        if (!isUniqueId(id)){
+            System.out.println("Error: Doctor with ID " + id + " already exists.");
+            return;
+        }
+        if (!isUniqueNumber(number)) {
+            System.out.println("Error: Doctor with contact number " + number + " already exists.");
+            return;
+        }
         if (count==doctors.length){
             resize();
         }
-        doctors[count++] = new Doctor(id, name, specialization, number);
+        doctors[count++] = new Doctor(id, name, specialization, availability, number);
         doctors[count - 1].availability = availability; // Set availability directly
     }
     public void deleteDoctor(int id){
-        for (int i=0; i< doctors.length; i++){
+        for (int i=0; i< count; i++){
             if (doctors[i].id == id){
-                for (int j=i; j< doctors.length; j++){
+                for (int j=i; j<count-1; j++){
                     doctors[j] = doctors[j+1];
                 }
                 doctors[count-1] = null;
@@ -66,8 +91,10 @@ class doctorManagement{
             System.out.println("No Doctors are available");
             return;
         }
+        boolean doctorFound = false;  // Track if any doctor is found
         for (Doctor doctor : doctors) {
             if (doctor.specialization.equalsIgnoreCase(specialization)){
+                doctorFound = true;
                 System.out.print(" Doctor name: " + doctor.doctorName +
                         ", Doctor specialization: " + doctor.specialization +
                         ", Doctor number: " + doctor.Number +
@@ -75,7 +102,11 @@ class doctorManagement{
                 for (int i = 0; i < doctor.availability.length; i++) {
                     System.out.print(" " + doctor.availability[i]);
                 }
+                System.out.println();
             }
+        }
+        if(!doctorFound){
+            System.out.println("No doctor found with specialization " +specialization);
         }
     }
     public void searchDoctorByAvailability(String dayAndTime) {
@@ -134,6 +165,7 @@ class doctorManagement{
                 for (int i=0; i<doctor.availability.length; i++){
                     System.out.print(" " +doctor.availability[i]);
                 }
+                break;
             }
         }
     }

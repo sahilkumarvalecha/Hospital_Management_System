@@ -33,7 +33,7 @@ public class Main {
                             System.out.print("Enter Patient Age: ");
                             int age = scanner.nextInt();
                             System.out.print("Enter Patient Phone Number: ");
-                            int phone = scanner.nextInt();
+                            String phone = scanner.next();
                             scanner.nextLine(); // Consume newline
                             System.out.print("Enter Patient Gender: ");
                             String gender = scanner.nextLine();
