@@ -11,6 +11,14 @@ public class Doctor {
         this.availability = availability;
         Number = number;
     }
+    public void setDiagnosis(Node patient, String diagnosis){
+        patient.setDiagnosis(diagnosis);
+        System.out.println("Doctor " +doctorName+ " set diagnosis for " +patient.PatientName + " : " +diagnosis);
+    }
+    public void setPrescription(Node patient, String prescription){
+        patient.setPrescription(prescription);
+        System.out.println("Doctor " +doctorName+ " set prescription for " +patient.PatientName + " : " +prescription);
+    }
 }
 class doctorManagement{
     Doctor[] doctors;

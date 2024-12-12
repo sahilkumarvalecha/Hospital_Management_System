@@ -38,6 +38,7 @@ public class Main {
                             System.out.print("Enter Your Name: ");
                             String name = scanner.nextLine();
                             //have to check here that if the patient is added by staff previously or not if it is not registered then show patient is not registered please contact staff
+                            
 
                             break;
 
@@ -138,7 +139,7 @@ public class Main {
                     switch (choice4) {
                         case 1:
                             System.out.print("Enter Patient Name: ");
-                            String name = scanner.nextLine();
+                            String patientName = scanner.nextLine();
                             System.out.print("Enter Patient Age: ");
                             int age = scanner.nextInt();
                             System.out.print("Enter Patient Phone Number: ");
@@ -149,7 +150,7 @@ public class Main {
                             System.out.print("Enter Patient Health Issue: ");
                             String healthIssue = scanner.nextLine();
 
-                            pm.insertPatient(name, age, phone, gender, healthIssue);
+                            pm.insertPatient(patientName, age, phone, gender, healthIssue);
                             System.out.println("Patient added successfully.");
                             break;
                         case 2:
@@ -159,7 +160,7 @@ public class Main {
                            System.out.print("Enter Doctor ID: ");
                             int ID = scanner.nextInt();
                             System.out.print("Enter Doctor Name: ");
-                            String name1 = scanner.nextLine();
+                            String doctorName = scanner.nextLine();
                             System.out.print("Enter Doctor specialization: ");
                             String specialization = scanner.nextLine();
                             System.out.print("Enter Doctor Phone Number: ");
@@ -173,7 +174,7 @@ public class Main {
                             System.out.print("Enter Doctor Availability Slot 2 (e.g., Tuesday 2PM): ");
                             availability[1] = scanner.nextLine();
 
-                            dm.addDoctor(ID, name1, specialization, availability, number);
+                            dm.addDoctor(ID, doctorName, specialization, availability, number);
                             System.out.println("Doctor added successfully!");
 
                             break;
@@ -214,6 +215,7 @@ public class Main {
                             break;
                         case 14:
                             System.out.println("Exiting the system. Goodbye!");
+                            System.exit(0);
                             scanner.close();
                             return;
                         default:
@@ -221,7 +223,9 @@ public class Main {
                             break;
 
                     }
-
+                case 4:
+                    System.out.println("Exiting the system. Goodbye!");
+                    System.exit(0);
 
             }
         }
