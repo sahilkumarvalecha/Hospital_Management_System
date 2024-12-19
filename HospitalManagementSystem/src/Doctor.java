@@ -108,7 +108,7 @@ class doctorManagement{
                         ", Doctor number: " + doctor.Number +
                         ", Doctor availability timing: ");
                 for (int i = 0; i < doctor.availability.length; i++) {
-                    System.out.print(" " + doctor.availability[i]);
+                    System.out.print( i + ":" + doctor.availability[i]);
                 }
                 System.out.println();
             }

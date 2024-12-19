@@ -3,6 +3,7 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
+
         PatientManagement pm = new PatientManagement();
         doctorManagement dm = new doctorManagement();
 
@@ -35,12 +36,15 @@ public class Main {
 
                         switch (choice2) {
                             case 1:
-                                System.out.print("Enter patient name to book an appointment: ");
-                                String name = scanner.nextLine();
-                                System.out.println("Enter appointment details: ");
-                                String appointmentDetails = scanner.nextLine();
-
-                                pm.bookAppointment(name, appointmentDetails);
+                                System.out.print("Enter patient Id to book an appointment: ");
+                                int patientId = scanner.nextInt();
+                                Node current = pm.head;
+                                String patientHealthIssue = current.getPatientHealthIssue();
+                                dm.searchDoctorBySpecialization(patientHealthIssue);
+//
+//                                System.out.println("Enter appointment details: ");
+//                                String appointmentDetails = scanner.nextLine();
+//                                pm.bookAppointment(patientId, appointmentDetails);
                                 break;
 
                             case 2:
@@ -137,7 +141,7 @@ public class Main {
                             System.out.println("10. Search For A Doctor");
                             System.out.println("11. Generate Bill For Patient");
                             System.out.println("12. View All Billing Records");
-                            System.out.println("11. Go Back To Main Menu");
+                            System.out.println("13. Go Back To Main Menu");
                             System.out.println("14. Exit");
                             System.out.println("--------------------------------------");
                             System.out.print("Enter your choice: ");
@@ -185,19 +189,51 @@ public class Main {
                             System.out.print("Enter Doctor Phone Number: ");
                             int number = scanner.nextInt();
                             scanner.nextLine(); // Consume newline
-                            String[] availability = new String[2];
-
-                            System.out.print("Enter Doctor Availability Slot 1 (e.g., Monday 10AM): ");
-                            availability[0] = scanner.nextLine();
-
-                            System.out.print("Enter Doctor Availability Slot 2 (e.g., Tuesday 2PM): ");
-                            availability[1] = scanner.nextLine();
-
-                            dm.addDoctor(ID, doctorName, specialization, availability, number);
-                            System.out.println("Doctor added successfully!");
-
+                            System.out.println("How many slots you want to add in your Schedule?");
+                            int slotCount = scanner.nextInt();
+                            if(slotCount <=0){
+                                System.out.print("Slot Count Can't be less than 0");
+                                //send him back to the input for how many slots
+                            }
+                            else {
+                                String[] availability = new String[slotCount];
+                                for (int i = 0; i < availability.length; i++) {
+                                    System.out.print("Enter Doctor Availability For Slots(e.g., Tuesday 2PM): ");
+                                    availability[i] = scanner.nextLine();
+                                }
+                                dm.addDoctor(ID, doctorName, specialization, availability, number);
+                                System.out.println("Doctor added successfully!");
+                            }
                             break;
                         case 4:
+                            System.out.print("Enter Doctor Id to update: ");
+                            int docId = scanner.nextInt();
+                            scanner.nextLine();
+                            System.out.println("Enter New patient Name: ");
+                            String docName = scanner.nextLine();
+                            System.out.println("Enter Doctor Specialization: ");
+                            String docInfo = scanner.nextLine();
+                            System.out.println("Enter Doctor Availability: ");
+                            String docSchedule = scanner.nextLine();
+                            System.out.println("How many slots you want to add in your Schedule?");
+                            slotCount = scanner.nextInt();
+                            String[] availability = new String[slotCount];
+                            if(slotCount<=0){
+                                System.out.print("Slot Count Can't be less than 0");
+                                //send him back to the input for how many slots
+                            }
+                            else {
+
+                                for (int i = 0; i < availability.length; i++) {
+                                    System.out.print("Enter Doctor Availability For Slots(e.g., Tuesday 2PM): ");
+                                    availability[i] = scanner.nextLine();
+                                }
+
+                            }
+                            System.out.println("Enter Doctor Contact Number: ");
+                            int phoneNum = scanner.nextInt();
+                            dm.updateDoctor(docId, docName, docInfo, availability, phoneNum);
+                            System.out.println("Doctor added successfully!");
 
                             break;
                         case 5:
@@ -205,11 +241,14 @@ public class Main {
                             pm.DisplayDataOfPatient();
                             break;
                         case 6:
-                            System.out.print("Enter the name of the patient you want to search : ");
-                            String searchName = scanner.nextLine();
-                            pm.SearchPatient(searchName);
+                            System.out.print("Enter the Id of the patient you want to search : ");
+                            int patientId = scanner.nextInt();
+                            pm.SearchPatient(patientId);
                             break;
                         case 7:
+                            System.out.println("Enter Patient Id:");
+                            patientId = scanner.nextInt();
+
 
                             break;
                         case 8:

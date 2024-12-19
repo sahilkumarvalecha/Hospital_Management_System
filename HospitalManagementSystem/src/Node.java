@@ -1,10 +1,12 @@
-import java.io.*;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
 
+
 public class Node {
-    int id;
+    int patientId;
      String PatientName ;
      int PatientAge;
      String PatientPhoneNUM;
@@ -18,7 +20,7 @@ public class Node {
      Node head;
 
     public Node(String PatientName, int PatientAge, String PatientPhoneNUM, String PatientGender, String PatientHealthIssue) {
-        this.id = 0;
+        this.patientId = 0;
         this.PatientName = PatientName;
         this.PatientAge = PatientAge;
         this.PatientPhoneNUM = PatientPhoneNUM;
@@ -32,8 +34,12 @@ public class Node {
         this.head =null;
     }
 
-    public int getId() {
-        return id;
+    public int getpatientId() {
+        return patientId;
+    }
+
+    public String getPatientHealthIssue() {
+        return PatientHealthIssue;
     }
 
     public void bookAppointment(String appointmentDetails){
@@ -57,6 +63,7 @@ public class Node {
         }
     }
     public void setDiagnosis(String diagnosis) {
+
         this.diagnosis = diagnosis;
     }
 
@@ -87,11 +94,10 @@ public class Node {
         }
     }
 }
-
 class PatientManagement{
     Node head;
     Node last;
-    private int idCounter = 1;
+    private int patientIdCounter = 1;
     public PatientManagement() {
         this.head = null;
         this.last = null;
@@ -102,6 +108,7 @@ class PatientManagement{
         }
         return false;
     }
+
     public void createFile(){
         File myFile = new File("patientData.txt");
         try {
@@ -117,7 +124,7 @@ class PatientManagement{
     }
     public void insertPatient(String PatientName, int PatientAge, String PatientPhoneNUM, String PatientGender, String PatientHealthIssue){
         Node newnode = new Node(PatientName,PatientAge,PatientPhoneNUM,PatientGender,PatientHealthIssue);
-        newnode.id = idCounter++;
+        newnode.patientId = patientIdCounter++;
         if(isEmpty()){
             head = newnode;
             last = newnode;
@@ -131,7 +138,7 @@ class PatientManagement{
     public void writeInFile(Node patient) {
         try{
             FileWriter fileWriter = new FileWriter("patientData.txt");
-            fileWriter.write("Patient ID: " +patient.id+ " , ");
+            fileWriter.write("Patient ID: " +patient.patientId+ " , ");
             fileWriter.write("Patient age: " +patient.PatientAge+ " , ");
             fileWriter.write("Patient phone number: " +patient.PatientPhoneNUM+ " , ");
             fileWriter.write("Patient Gender: " +patient.PatientGender+ " , ");
@@ -155,7 +162,7 @@ class PatientManagement{
         }
     }
 
-    public void SearchPatient(String patientName) {
+    public void SearchPatient(int patientId) {
         if (isEmpty()) {
             System.out.println("The list is empty. Patient not found.");
             return;
@@ -164,16 +171,16 @@ class PatientManagement{
         Node current = head;
         boolean found = false;
 
-        System.out.println("Searching for patient: " + patientName);
+        System.out.println("Searching for patient..... ");
         while (current != null) {
-            if (current.PatientName.equalsIgnoreCase(patientName)) { // Case-insensitive match
+            if (current.patientId == patientId) { // Case-insensitive match
                 found = true;
-               break;
+                break;
             }
             current = current.next; // Move to the next node
         }
         if (found){
-            System.out.println("Patient found with name " +patientName);
+            System.out.println("Patient found with Id " +patientId);
             System.out.println("Patient Details:");
             System.out.println("Name: " + current.PatientName +
                     ", Age: " + current.PatientAge +
@@ -182,18 +189,19 @@ class PatientManagement{
                     ", Health Issue: " + current.PatientHealthIssue);
         }
         if (!found) {
-            System.out.println("No patient found with name " +patientName);
+            System.out.println("No patient found with Id" + patientId);
         }
     }
-    public void bookAppointment(String patientName, String appointmentDetails){
+    public void bookAppointment(int patientId, String appointmentDetails){
         Node curr = head;
         while (curr != null){
-            if (curr.PatientName.equalsIgnoreCase(patientName)){
-                curr.bookAppointment(appointmentDetails);
+            if (curr.patientId == patientId){
+
+//                curr.bookAppointment(appointmentDetails);
             }
             curr = curr.next;
         }
-        System.out.println("No patient found with name: " +patientName);
+        System.out.println("No patient found with name: " + patientId);
     }
     public void viewAppointments(String name){
         Node curr = head;
@@ -215,57 +223,58 @@ class PatientManagement{
         }
         System.out.println("No patient found with name: " +patientName);
     }
-    public void updatePatientInfo(int id, String name, int age, String gender, String healthIssue){
+    public void updatePatientInfo(int patientId, String name, int age, String gender, String healthIssue){
         Node curr = head;
         while (curr!=null ){
-            if (curr.id == id){
-               if (name != null){
-                   curr.PatientName = name;
-               }
-               if (age>0) {
-                   curr.PatientAge = age;
-               }
-               if (gender != null){
-                   curr.PatientGender = gender;
-               }
-               if (healthIssue != null){
-                   curr.PatientHealthIssue = healthIssue;
-               }
-                System.out.println("Patient details updated successfully! for ID: " +id);
+            if (curr.patientId == patientId){
+                if (name != null){
+                    curr.PatientName = name;
+                }
+                if (age>0) {
+                    curr.PatientAge = age;
+                }
+                if (gender != null){
+                    curr.PatientGender = gender;
+                }
+                if (healthIssue != null){
+                    curr.PatientHealthIssue = healthIssue;
+                }
+                System.out.println("Patient details updated successfully! for ID: " +patientId);
                 return;
             }
             curr = curr.next;
         }
-        System.out.println("No patient found with ID: " +id);
+        System.out.println("No patient found with ID: " +patientId);
     }
-    public void deletePatient(int id){
+    public void deletePatient(int patientId){
         if (isEmpty()){
             System.out.println(" Patient List is Empty ");
             return;
         }
-        if (head.id == id){
+        if (head.patientId == patientId){
             head = head.next;
         }
         Node curr = head.next;
         Node prev = head;
         while (curr!= null){
 
-            if (curr.next == null && curr.id == id){
+            if (curr.next == null && curr.patientId == patientId){
                 prev.next = null;
             }
-            if (curr.id == id){
+            if (curr.patientId == patientId){
                 prev.next = curr.next;
                 curr = curr.next;
             }
             curr = curr.next;
             prev = prev.next;
         }
-        System.out.println("No patient found with ID: " +id);
+        System.out.println("No patient found with ID: " +patientId);
 
     }
 
 
     public void sortPatients() {
+
         head = quickSort(head);
     }
 
@@ -342,7 +351,7 @@ class PatientManagement{
         }
         Node current = head;
         while (current != null) {
-            System.out.print(" Patient ID: " + current.id);
+            System.out.print(" Patient ID: " + current.patientId);
             System.out.print(", Patient Name: " + current.PatientName);
             System.out.print(", Patient Age: " + current.PatientAge);
             System.out.print(", Patient Phone Number: " + current.PatientPhoneNUM);
@@ -356,3 +365,4 @@ class PatientManagement{
         }
     }
 }
+
