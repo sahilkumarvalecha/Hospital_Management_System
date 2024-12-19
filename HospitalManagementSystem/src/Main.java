@@ -17,60 +17,66 @@ public class Main {
         while (true) {
             switch (choice1) {
                 case 1:
-                    System.out.println("--------------------------------------");
-                    System.out.println("Patient Menu ");
-                    System.out.println("--------------------------------------");
-                    System.out.println("1. Book An Appointment");
-                    System.out.println("2. View Appointment Details");
-                    System.out.println("3. Cancel An Appointment ");
-                    System.out.println("4. View My Diagnosis Or Prescription ");
-                    System.out.println("5. Pay My Bill");
-                    System.out.println("6. Go Back To Mai" +
-                            "n Menu");
-                    System.out.println("7. Exit");
-                    System.out.println("--------------------------------------");
-                    System.out.print("Enter your choice: ");
-                    int choice2 = scanner.nextInt();
-                    scanner.nextLine();
+                    while (true) {
+                        System.out.println("--------------------------------------");
+                        System.out.println("Patient Menu ");
+                        System.out.println("--------------------------------------");
+                        System.out.println("1. Book An Appointment");
+                        System.out.println("2. View Appointment Details");
+                        System.out.println("3. Cancel An Appointment ");
+                        System.out.println("4. View My Diagnosis Or Prescription ");
+                        System.out.println("5. Pay My Bill");
+                        System.out.println("6. Go Back To Main Menu");
+                        System.out.println("7. Exit");
+                        System.out.println("--------------------------------------");
+                        System.out.print("Enter your choice: ");
+                        int choice2 = scanner.nextInt();
+                        scanner.nextLine();
 
-                    switch (choice2) {
-                        case 1:
-                            System.out.print("Enter Your Name: ");
-                            String name = scanner.nextLine();
-                            //have to check here that if the patient is added by staff previously or not if it is not registered then show patient is not registered please contact staff
-                            
+                        switch (choice2) {
+                            case 1:
+                                System.out.print("Enter patient name to book an appointment: ");
+                                String name = scanner.nextLine();
+                                System.out.println("Enter appointment details: ");
+                                String appointmentDetails = scanner.nextLine();
 
-                            break;
+                                pm.bookAppointment(name, appointmentDetails);
+                                break;
 
-                        case 2:
-
-
-                            break;
-
-                        case 3:
-
-                            break;
-                        case 4:
+                            case 2:
+                                System.out.print("Enter patient name to view appointment details: ");
+                                String patientName = scanner.nextLine();
+                                pm.viewAppointments(patientName);
+                                break;
+                            case 3:
+                                System.out.print("Enter patient name to cancel an appointment: ");
+                                String pName = scanner.nextLine();
+                                pm.cancelAppointment(pName);
+                                break;
+                            case 4:
 //
-                            break;
+                                break;
 
-                        case 5:
+                            case 5:
 //                            System.out.print("Enter the filename to save the patients: ");
 //                            pm.savePatientsToFile("filename.txt");
-                            break;
-                        case 6:
-
-                            break;
-                        case 7:
-                            System.out.println("Exiting the system. Goodbye!");
-                            scanner.close();
-                            return;
+                                break;
+                            case 6:
+                                System.out.println("Going back to the main menu...");
+                                break;
+                            case 7:
+                                System.out.println("Exiting the system. Goodbye!");
+                                scanner.close();
+                                return;
 //                            System.out.print("Enter the filename to load patients from: ");
 //                            pm.loadPatientsFromFile("filename.txt");
-                        default:
-                            System.out.println("Invalid choice. Please try again.");
-                            break;
+                            default:
+                                System.out.println("Invalid choice. Please try again.");
+                                break;
+                        }
+                        if (choice2 == 6) break;
                     }
+                    break;
                 case 2:
                     System.out.println("--------------------------------------");
                     System.out.println("Doctor Menu ");
@@ -103,7 +109,7 @@ public class Main {
 
                             break;
                         case 6:
-
+                            System.out.println("Going back to the main menu...");
                             break;
                         case 7:
                             System.out.println("Exiting the system. Goodbye!");
@@ -113,30 +119,33 @@ public class Main {
                             System.out.println("Invalid choice. Please try again.");
                             break;
                     }
-                case 3:
-                    System.out.println("--------------------------------------");
-                    System.out.println("Staff Menu ");
-                    System.out.println("--------------------------------------");
-                    System.out.println("1. Add New Patient");
-                    System.out.println("2. Update Patient Information");
-                    System.out.println("3. Add New Doctor");
-                    System.out.println("4. Update Doctor Information");
-                    System.out.println("5. View All Patients");
-                    System.out.println("6. Search For A Patient");
-                    System.out.println("7. Assign Doctor To Patient");
-                    System.out.println("8. Update Doctor Schedule");
-                    System.out.println("9. View All Doctors");
-                    System.out.println("10. Search For A Doctor");
-                    System.out.println("11. Generate Bill For Patient");
-                    System.out.println("12. View All Billing Records");
-                    System.out.println("11. Go Back To Main Menu");
-                    System.out.println("14. Exit");
-                    System.out.println("--------------------------------------");
-                    System.out.print("Enter your choice: ");
-                    int choice4 = scanner.nextInt();
-                    scanner.nextLine();
+                    if (choice3 == 6) break;
+                    break;
+                        case 3:
+                            System.out.println("--------------------------------------");
+                            System.out.println("Staff Menu ");
+                            System.out.println("--------------------------------------");
+                            System.out.println("1. Add New Patient");
+                            System.out.println("2. Update Patient Information");
+                            System.out.println("3. Add New Doctor");
+                            System.out.println("4. Update Doctor Information");
+                            System.out.println("5. View All Patients");
+                            System.out.println("6. Search For A Patient");
+                            System.out.println("7. Assign Doctor To Patient");
+                            System.out.println("8. Update Doctor Schedule");
+                            System.out.println("9. View All Doctors");
+                            System.out.println("10. Search For A Doctor");
+                            System.out.println("11. Generate Bill For Patient");
+                            System.out.println("12. View All Billing Records");
+                            System.out.println("11. Go Back To Main Menu");
+                            System.out.println("14. Exit");
+                            System.out.println("--------------------------------------");
+                            System.out.print("Enter your choice: ");
+                            int choice4 = scanner.nextInt();
+                            scanner.nextLine();
 
                     switch (choice4) {
+
                         case 1:
                             System.out.print("Enter Patient Name: ");
                             String patientName = scanner.nextLine();
@@ -149,15 +158,25 @@ public class Main {
                             String gender = scanner.nextLine();
                             System.out.print("Enter Patient Health Issue: ");
                             String healthIssue = scanner.nextLine();
-
                             pm.insertPatient(patientName, age, phone, gender, healthIssue);
                             System.out.println("Patient added successfully.");
                             break;
                         case 2:
-
+                            System.out.print("Enter patient Id to update: ");
+                            int id = scanner.nextInt();
+                            scanner.nextLine();
+                            System.out.println("Enter New patient Name: ");
+                            String newName = scanner.nextLine();
+                            System.out.println("Enter New patient age: ");
+                            int newAge = scanner.nextInt();
+                            System.out.println("Enter New patient gender: ");
+                            String newGender = scanner.nextLine();
+                            System.out.println("Enter New patient health Issue: ");
+                            String newHealthIssue = scanner.nextLine();
+                            pm.updatePatientInfo(id, newName, newAge, newGender, newHealthIssue);
                             break;
                         case 3:
-                           System.out.print("Enter Doctor ID: ");
+                            System.out.print("Enter Doctor ID: ");
                             int ID = scanner.nextInt();
                             System.out.print("Enter Doctor Name: ");
                             String doctorName = scanner.nextLine();
@@ -182,13 +201,11 @@ public class Main {
 
                             break;
                         case 5:
-
                             pm.sortPatients();
-                            System.out.println("Patients sorted by name.");
                             pm.DisplayDataOfPatient();
                             break;
                         case 6:
-                            System.out.print("Enter the name of the patient to  Liner search: ");
+                            System.out.print("Enter the name of the patient you want to search : ");
                             String searchName = scanner.nextLine();
                             pm.SearchPatient(searchName);
                             break;
@@ -211,23 +228,28 @@ public class Main {
 
                             break;
                         case 13:
-
+                            System.out.println("Going back to the main menu...");
                             break;
                         case 14:
                             System.out.println("Exiting the system. Goodbye!");
-                            System.exit(0);
+                            //  System.exit(0);
                             scanner.close();
                             return;
                         default:
                             System.out.println("Invalid choice. Please try again.");
                             break;
-
                     }
-                case 4:
-                    System.out.println("Exiting the system. Goodbye!");
-                    System.exit(0);
+                            if (choice4 == 13) break;
+                            break;
 
-            }
+                case 4:
+                System.out.println("Exiting the system. Goodbye!");
+                scanner.close();
+                return;
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+                    break;
+        }
         }
     }
 }

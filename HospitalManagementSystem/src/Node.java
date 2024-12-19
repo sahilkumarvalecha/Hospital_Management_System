@@ -1,6 +1,10 @@
 import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.Scanner;
 
 public class Node {
+    int id;
      String PatientName ;
      int PatientAge;
      String PatientPhoneNUM;
@@ -11,8 +15,10 @@ public class Node {
     String diagnosis;
     String prescription;
      Node next;
+     Node head;
 
     public Node(String PatientName, int PatientAge, String PatientPhoneNUM, String PatientGender, String PatientHealthIssue) {
+        this.id = 0;
         this.PatientName = PatientName;
         this.PatientAge = PatientAge;
         this.PatientPhoneNUM = PatientPhoneNUM;
@@ -23,24 +29,31 @@ public class Node {
         this.diagnosis = null;
         this.prescription = null;
         this.next = null;
+        this.head =null;
     }
+
+    public int getId() {
+        return id;
+    }
+
     public void bookAppointment(String appointmentDetails){
         this.appointmentDetails = appointmentDetails;
         System.out.println("Appointment booked for " +PatientName+ " on " +appointmentDetails);
+        billAmount  += 1000;
     }
     public void viewAppointment(){
-        if (this.appointmentDetails.isEmpty()){
-            System.out.println("No appointments scheduled");
+        if (this.appointmentDetails == null){
+            System.out.println("No appointments scheduled for patient name: " +PatientName);
         }else{
-            System.out.println("Appointment Details: " +appointmentDetails);
+            System.out.println("Appointment Details for " +PatientName+ " : " +appointmentDetails);
         }
     }
-    public void cancelAppointment(String patientName){
-        if (this.PatientName.equalsIgnoreCase(patientName) && this.appointmentDetails != null){
-            appointmentDetails = "";
-            System.out.println("Appointment cancelled for " +patientName);
+    public void cancelAppointment(){
+        if (this.appointmentDetails == null){
+            System.out.println("No appointment to cancel for : " +PatientName);
         }else {
-            System.out.println("No appointment found for " +patientName);
+            System.out.println("Appointments for " +PatientName+ " on " +appointmentDetails+ " has been cancelled.");
+            appointmentDetails = null;
         }
     }
     public void setDiagnosis(String diagnosis) {
@@ -59,18 +72,29 @@ public class Node {
             System.out.println("No patient found with this name " +patientName);
         }
     }
-    public void payBill(double billAmount){
-        this.billAmount = billAmount;
-        System.out.println("Bill of " +billAmount+ " paid by " + PatientName);
+    public void payBill(double amountPaid){
+        if(amountPaid <=0){
+            System.out.println("Invalid payment amount. please enter a valid amount.");
+            return;
+        }
+        if (amountPaid >= this.billAmount){
+            System.out.println("Bill of " +this.billAmount+ " fully paid by " +PatientName+ ".");
+            this.billAmount = 0.0; //bill is now fully paid
+        }else {
+            this.billAmount -= amountPaid;
+            System.out.println("Partial payment of " +amountPaid+ " from amount " +this.billAmount+ " received from " +PatientName+ ".");
+            System.out.println("Remaining balance is " +this.billAmount);
+        }
     }
-
 }
 
 class PatientManagement{
-    Node  head;
-
+    Node head;
+    Node last;
+    private int idCounter = 1;
     public PatientManagement() {
         this.head = null;
+        this.last = null;
     }
     public boolean isEmpty(){
         if(head == null){
@@ -78,16 +102,57 @@ class PatientManagement{
         }
         return false;
     }
+    public void createFile(){
+        File myFile = new File("patientData.txt");
+        try {
+            if (myFile.createNewFile()) {
+                System.out.println("File created successfully.");
+            } else {
+                System.out.println("File already exists.");
+            }
+        } catch (IOException e) {
+            System.out.println("Unable to create file");
+            e.printStackTrace();
+        }
+    }
     public void insertPatient(String PatientName, int PatientAge, String PatientPhoneNUM, String PatientGender, String PatientHealthIssue){
         Node newnode = new Node(PatientName,PatientAge,PatientPhoneNUM,PatientGender,PatientHealthIssue);
+        newnode.id = idCounter++;
         if(isEmpty()){
             head = newnode;
+            last = newnode;
         }
         else{
-            newnode.next = head;
-            head=newnode;
+            last.next = newnode;
+            last = newnode;
         }
-
+        writeInFile(newnode);
+    }
+    public void writeInFile(Node patient) {
+        try{
+            FileWriter fileWriter = new FileWriter("patientData.txt");
+            fileWriter.write("Patient ID: " +patient.id+ " , ");
+            fileWriter.write("Patient age: " +patient.PatientAge+ " , ");
+            fileWriter.write("Patient phone number: " +patient.PatientPhoneNUM+ " , ");
+            fileWriter.write("Patient Gender: " +patient.PatientGender+ " , ");
+            fileWriter.write("Patient health issue: " +patient.PatientHealthIssue);
+            fileWriter.close();
+        } catch (IOException e) {
+            System.out.println("Error writing patient data to file.");
+            e.printStackTrace();
+        }
+    }
+    public void readFromFile(){
+        File myfile = new File("patientData.txt");
+        try(Scanner sc = new Scanner(myfile)) {
+            while (sc.hasNextLine()){
+                String line = sc.nextLine();
+                System.out.println(line);
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found");
+            e.printStackTrace();
+        }
     }
 
     public void SearchPatient(String patientName) {
@@ -102,23 +167,101 @@ class PatientManagement{
         System.out.println("Searching for patient: " + patientName);
         while (current != null) {
             if (current.PatientName.equalsIgnoreCase(patientName)) { // Case-insensitive match
-                if (!found) {
-                    System.out.println("Patient(s) found with the name: " + patientName);
-                    found = true;
-                }
-                System.out.println("Details:");
-                System.out.println("Name: " + current.PatientName +
-                        ", Age: " + current.PatientAge +
-                        ", Phone: " + current.PatientPhoneNUM +
-                        ", Gender: " + current.PatientGender +
-                        ", Health Issue: " + current.PatientHealthIssue);
+                found = true;
+               break;
             }
             current = current.next; // Move to the next node
         }
-
-        if (!found) {
-            System.out.println("Patient not found.");
+        if (found){
+            System.out.println("Patient found with name " +patientName);
+            System.out.println("Patient Details:");
+            System.out.println("Name: " + current.PatientName +
+                    ", Age: " + current.PatientAge +
+                    ", Phone: " + current.PatientPhoneNUM +
+                    ", Gender: " + current.PatientGender +
+                    ", Health Issue: " + current.PatientHealthIssue);
         }
+        if (!found) {
+            System.out.println("No patient found with name " +patientName);
+        }
+    }
+    public void bookAppointment(String patientName, String appointmentDetails){
+        Node curr = head;
+        while (curr != null){
+            if (curr.PatientName.equalsIgnoreCase(patientName)){
+                curr.bookAppointment(appointmentDetails);
+            }
+            curr = curr.next;
+        }
+        System.out.println("No patient found with name: " +patientName);
+    }
+    public void viewAppointments(String name){
+        Node curr = head;
+        while (curr != null){
+            if (curr.PatientName.equalsIgnoreCase(name)){
+                curr.viewAppointment();
+            }
+            curr = curr.next;
+        }
+        System.out.println("No patient found with name: " +name);
+    }
+    public void cancelAppointment(String patientName){
+        Node curr = head;
+        while (curr != null){
+            if (curr.PatientName.equalsIgnoreCase(patientName)){
+                curr.cancelAppointment();
+            }
+            curr = curr.next;
+        }
+        System.out.println("No patient found with name: " +patientName);
+    }
+    public void updatePatientInfo(int id, String name, int age, String gender, String healthIssue){
+        Node curr = head;
+        while (curr!=null ){
+            if (curr.id == id){
+               if (name != null){
+                   curr.PatientName = name;
+               }
+               if (age>0) {
+                   curr.PatientAge = age;
+               }
+               if (gender != null){
+                   curr.PatientGender = gender;
+               }
+               if (healthIssue != null){
+                   curr.PatientHealthIssue = healthIssue;
+               }
+                System.out.println("Patient details updated successfully! for ID: " +id);
+                return;
+            }
+            curr = curr.next;
+        }
+        System.out.println("No patient found with ID: " +id);
+    }
+    public void deletePatient(int id){
+        if (isEmpty()){
+            System.out.println(" Patient List is Empty ");
+            return;
+        }
+        if (head.id == id){
+            head = head.next;
+        }
+        Node curr = head.next;
+        Node prev = head;
+        while (curr!= null){
+
+            if (curr.next == null && curr.id == id){
+                prev.next = null;
+            }
+            if (curr.id == id){
+                prev.next = curr.next;
+                curr = curr.next;
+            }
+            curr = curr.next;
+            prev = prev.next;
+        }
+        System.out.println("No patient found with ID: " +id);
+
     }
 
 
@@ -198,57 +341,18 @@ class PatientManagement{
             return;
         }
         Node current = head;
-
-        System.out.println("Patient List With Sorted:");
         while (current != null) {
-            System.out.println(
-                    "Name: " + current.PatientName +
-                            ", Age: " + current.PatientAge +
-                            ", Phone: " + current.PatientPhoneNUM +
-                            ", Gender: " + current.PatientGender +
-                            ", Health Issue: " + current.PatientHealthIssue);
+            System.out.print(" Patient ID: " + current.id);
+            System.out.print(", Patient Name: " + current.PatientName);
+            System.out.print(", Patient Age: " + current.PatientAge);
+            System.out.print(", Patient Phone Number: " + current.PatientPhoneNUM);
+            System.out.print(", Patient Gender: " + current.PatientGender);
+            System.out.print(", Patient Health Issue: " + current.PatientHealthIssue);
+            System.out.print(", Appointment Details: " + current.appointmentDetails);
+            System.out.print(", Bill Amount: " + current.billAmount);
+            System.out.println(" ");
 
-            current = current.next; // Move to the next node
-        }
-    }
-    public void savePatientsToFile(String filename) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
-            Node current = head;
-            while (current != null) {
-                writer.write(current.PatientName + "," + current.PatientAge + "," + current.PatientPhoneNUM + "," + current.PatientGender + "," + current.PatientHealthIssue);
-                writer.newLine();
-                current = current.next;
-            }
-            System.out.println("Patient data saved to file.");
-        } catch (IOException e) {
-            System.out.println("An error occurred while saving patient data.");
-            e.printStackTrace();
-        }
-    }
-    private boolean isNumeric(String str) {
-        return str.matches("\\d+"); // Matches only digits
-    }
-
-    // Load patients from a file
-    public void loadPatientsFromFile(String filename) {
-        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] patientData = line.split(",");
-                if (patientData.length == 5 && isNumeric(patientData[2])) {
-                    insertPatient(patientData[0], Integer.parseInt(patientData[1]), patientData[2], patientData[3], patientData[4]);
-                }else {
-                    System.out.println("Skipping invalid data: " + line);
-                }
-            }
-            System.out.println("Patient data loaded from file.");
-        } catch (IOException e) {
-            System.out.println("An error occurred while loading patient data.");
-            e.printStackTrace();
-        }
-        catch (NumberFormatException e) {
-            System.out.println("Data format in file is incorrect.");
-            e.printStackTrace();
+            current = current.next;  // Move to the next node
         }
     }
 }
