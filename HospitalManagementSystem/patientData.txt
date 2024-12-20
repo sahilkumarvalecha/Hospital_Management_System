@@ -1,1 +1,0 @@
-Patient ID: 1 , Patient age: 19 , Patient phone number: 2897352 , Patient Gender: male , Patient health issue: flu

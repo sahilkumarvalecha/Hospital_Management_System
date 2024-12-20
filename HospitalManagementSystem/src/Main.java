@@ -163,7 +163,7 @@ public class Main {
                             System.out.print("Enter Patient Health Issue: ");
                             String healthIssue = scanner.nextLine();
                             pm.insertPatient(patientName, age, phone, gender, healthIssue);
-                            System.out.println("Patient added successfully.");
+                            System.out.println("Patient added successfully with ID." + pm.getPatientIdCounter());
                             break;
                         case 2:
                             System.out.print("Enter patient Id to update: ");

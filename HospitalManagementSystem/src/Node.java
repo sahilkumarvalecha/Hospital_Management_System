@@ -1,7 +1,4 @@
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.Scanner;
 
 
@@ -143,12 +140,37 @@ class PatientManagement{
             fileWriter.write("Patient phone number: " +patient.PatientPhoneNUM+ " , ");
             fileWriter.write("Patient Gender: " +patient.PatientGender+ " , ");
             fileWriter.write("Patient health issue: " +patient.PatientHealthIssue);
+            savePatientsToFile("patientData.txt");
             fileWriter.close();
         } catch (IOException e) {
             System.out.println("Error writing patient data to file.");
             e.printStackTrace();
         }
     }
+
+    public int getPatientIdCounter() {
+        return patientIdCounter;
+    }
+
+    public void savePatientsToFile(String filename) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
+            Node current = head; // Assuming `head` is the start of your patient linked list
+            while (current != null) {
+                writer.write("Patient ID: " + current.patientId);
+                writer.write(", Name: " + current.PatientName);
+                writer.write(", Age: " + current.PatientAge);
+                writer.write(", Phone: " + current.PatientPhoneNUM);
+                writer.write(", Gender: " + current.PatientHealthIssue);
+                writer.write(", Health Issue: " + current.getPatientHealthIssue());
+                writer.newLine();
+                current = current.next;
+            }
+            System.out.println("Patient data has been saved to the file: " + filename);
+        } catch (IOException e) {
+            System.out.println("An error occurred while saving patients to file: " + e.getMessage());
+        }
+    }
+
     public void readFromFile(){
         File myfile = new File("patientData.txt");
         try(Scanner sc = new Scanner(myfile)) {
