@@ -7,6 +7,7 @@ public class Main {
         PatientManagement pm = new PatientManagement();
         doctorManagement dm = new doctorManagement();
         Staff st = new Staff();
+        pm.loadFromFile();
 
         System.out.println("Login As ");
         System.out.println("1- Patient ");
@@ -38,9 +39,8 @@ public class Main {
                             case 1:
                                 System.out.print("Enter patient Id to book an appointment: ");
                                 int patientId = scanner.nextInt();
-                                Node current = pm.head;
-                                String patientHealthIssue = current.getPatientHealthIssue();
-                                dm.searchDoctorBySpecialization(patientHealthIssue);
+                                Node curr = pm.SearchPatient(patientId);
+                                dm.searchDoctorBySpecialization(curr.PatientHealthIssue);
 //
 //                                System.out.println("Enter appointment details: ");
 //                                String appointmentDetails = scanner.nextLine();
@@ -162,9 +162,11 @@ public class Main {
                             String gender = scanner.nextLine();
                             System.out.print("Enter Patient Health Issue: ");
                             String healthIssue = scanner.nextLine();
+//                            pm.createFile();
+
                             st.addNewPatient(patientName, age, phone, gender, healthIssue);
-                            int patient_id = pm.getPatientIdCounter()-1;
-                            System.out.println("Patient added successfully with ID: " + patient_id);
+                            System.out.println("Patient added successfully with ID: " + pm.getPatientIdCounter());
+
                             break;
                         case 2:
                             System.out.print("Enter patient Id to update: ");
