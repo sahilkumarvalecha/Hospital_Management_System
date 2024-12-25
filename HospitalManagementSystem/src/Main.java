@@ -6,6 +6,7 @@ public class Main {
 
         PatientManagement pm = new PatientManagement();
         doctorManagement dm = new doctorManagement();
+        Staff st = new Staff();
 
         System.out.println("Login As ");
         System.out.println("1- Patient ");
@@ -161,7 +162,7 @@ public class Main {
                             String gender = scanner.nextLine();
                             System.out.print("Enter Patient Health Issue: ");
                             String healthIssue = scanner.nextLine();
-                            pm.insertPatient(patientName, age, phone, gender, healthIssue);
+                            st.addNewPatient(patientName, age, phone, gender, healthIssue);
                             int patient_id = pm.getPatientIdCounter()-1;
                             System.out.println("Patient added successfully with ID: " + patient_id);
                             break;
@@ -177,19 +178,20 @@ public class Main {
                             String newGender = scanner.nextLine();
                             System.out.println("Enter New patient health Issue: ");
                             String newHealthIssue = scanner.nextLine();
-                            pm.updatePatientInfo(id, newName, newAge, newGender, newHealthIssue);
+                            st.updatePatientInfo(id, newName, newAge, newGender, newHealthIssue);
                             break;
                         case 3:
                             System.out.print("Enter Doctor ID: ");
                             int ID = scanner.nextInt();
                             System.out.print("Enter Doctor Name: ");
-                            String doctorName = scanner.nextLine();
+                            String doctorName = scanner.next();
+                            scanner.nextLine();
                             System.out.print("Enter Doctor specialization: ");
                             String specialization = scanner.nextLine();
                             System.out.print("Enter Doctor Phone Number: ");
                             int number = scanner.nextInt();
                             scanner.nextLine(); // Consume newline
-                            System.out.println("How many slots you want to add in your Schedule?");
+                            System.out.print("How many slots you want to add in your Schedule? ");
                             int slotCount = scanner.nextInt();
                             if(slotCount <=0){
                                 System.out.print("Slot Count Can't be less than 0");
@@ -199,9 +201,10 @@ public class Main {
                                 String[] availability = new String[slotCount];
                                 for (int i = 0; i < availability.length; i++) {
                                     System.out.print("Enter Doctor Availability For Slots(e.g., Tuesday 2PM): ");
-                                    availability[i] = scanner.nextLine();
+                                    availability[i] = scanner.next();
+                                    scanner.nextLine();
                                 }
-                                dm.addDoctor(ID, doctorName, specialization, availability, number);
+                                st.addNewDoctor(ID, doctorName, specialization, availability, number);
                                 System.out.println("Doctor added successfully!");
                             }
                             break;
@@ -232,18 +235,17 @@ public class Main {
                             }
                             System.out.println("Enter Doctor Contact Number: ");
                             int phoneNum = scanner.nextInt();
-                            dm.updateDoctor(docId, docName, docInfo, availability, phoneNum);
+                            st.updateDoctorInfo(docId, docName, docInfo, availability, phoneNum);
                             System.out.println("Doctor added successfully!");
 
                             break;
                         case 5:
-                            pm.sortPatients();
-                            pm.DisplayDataOfPatient();
+                            st.viewAllPatients();
                             break;
                         case 6:
                             System.out.print("Enter the Id of the patient you want to search : ");
                             int patientId = scanner.nextInt();
-                            pm.SearchPatient(patientId);
+                            st.searchPatient(patientId);
                             break;
                         case 7:
                             System.out.println("Enter Patient Id:");
@@ -255,10 +257,12 @@ public class Main {
 
                             break;
                         case 9:
-
+                            st.viewAllDoctors();
                             break;
                         case 10:
-
+                            System.out.print("Enter the specialization name to search for a doctor: ");
+                            specialization = scanner.nextLine();
+                            st.searchDoctor(specialization);
                             break;
                         case 11:
 

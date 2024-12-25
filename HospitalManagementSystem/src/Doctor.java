@@ -143,21 +143,34 @@ class doctorManagement{
             System.out.println("No doctor available at: " +dayAndTime);
         }
     }
-    public void displayAllDoctors(){
-        if (count == 0){
+    public void displayAllDoctors() {
+        if (count == 0 || doctors == null) {
             System.out.println("No Doctors are available");
             return;
         }
-        for (Doctor doctor : doctors){
-            System.out.print(" Doctor name: " +doctor.doctorName+
-                    ", Doctor specialization: " +doctor.specialization+
-                    ", Doctor number: " +doctor.Number+
-                    ", Doctor availability timing: " );
-            for (int i=0; i<doctor.availability.length; i++){
-                System.out.print(" " +doctor.availability[i]);
+        boolean doctorPresent = false;
+        for (Doctor doctor : doctors) {
+            if (doctor != null) {
+                doctorPresent = true;
+                System.out.print(" Doctor name: " + doctor.doctorName +
+                        ", Doctor specialization: " + doctor.specialization +
+                        ", Doctor number: " + doctor.Number +
+                        ", Doctor availability timing: ");
+                if (doctor.availability != null) {
+                    for (String time : doctor.availability) {
+                        System.out.print(", " + time);
+                    }
+                } else {
+                    System.out.print(" No availability info.");
+                }
+                System.out.println();
             }
         }
+        if (!doctorPresent) {
+            System.out.println("Encountered a null Doctor entry.");
+        }
     }
+
     public void allocateDoctor(String specialization){
         if (count == 0){
             System.out.println("No doctor available");
