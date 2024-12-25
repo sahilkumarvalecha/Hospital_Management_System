@@ -1,0 +1,1 @@
+Patient ID: 1 , Patient name: silo , Patient age: 19 , Patient phone number: 289101 , Patient Gender: female , Patient health issue: flu
