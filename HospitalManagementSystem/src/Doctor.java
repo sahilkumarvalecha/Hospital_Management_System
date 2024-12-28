@@ -1,3 +1,8 @@
+
+import java.io.*;
+import java.util.Scanner;
+
+
 public class Doctor {
     int id;
     String doctorName;
@@ -44,7 +49,7 @@ class doctorManagement{
         return true; // number unique
     }
 
-    public void resize(){
+    public  void resize(){
 
         Doctor[] temp = new Doctor[doctors.length + 10];
         for (int i=0; i<doctors.length; i++){
@@ -188,6 +193,51 @@ class doctorManagement{
                 }
                 break;
             }
+        }
+    }
+    // Save all doctor details to a file
+    public static void saveToFile(Doctor[] doctors, int count) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("doctorData.txt"))) {
+            for (int i = 0; i < count; i++) {
+                Doctor doctor = doctors[i];
+                if (doctor != null) {
+                    writer.write("ID:" + doctor.id + ", Name:" + doctor.doctorName +
+                            ", Specialization:" + doctor.specialization +
+                            ", Number:" + doctor.Number +
+                            ", Availability:" + String.join(";", doctor.availability));
+                    writer.newLine();
+                }
+            }
+            System.out.println("Doctor data saved successfully.");
+        } catch (IOException e) {
+            System.out.println("Error saving doctor data: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    public void loadFromFile() {
+        File file = new File("doctorData.txt");
+        if (!file.exists()) {
+            System.out.println("No previous doctor data found.");
+            return;
+        }
+
+        try (Scanner sc = new Scanner(file)) {
+            while (sc.hasNextLine()) {
+                String line = sc.nextLine();
+                // Split the line by commas to separate each field
+                String[] fields = line.split(", ");
+                int id = Integer.parseInt(fields[0].split(":")[1].trim());
+                String name = fields[1].split(":")[1].trim();
+                String specialization = fields[2].split(":")[1].trim();
+                int number = Integer.parseInt(fields[3].split(":")[1].trim());
+                String[] availability = fields[4].split(":")[1].trim().split(";");
+
+                // Add the loaded doctor to the list
+                this.addDoctor(id, name, specialization, availability, number);
+            }
+            System.out.println("Doctor data loaded successfully.");
+        } catch (IOException | NumberFormatException e) {
+            System.out.println("Error loading doctor data: " + e.getMessage());
         }
     }
 
