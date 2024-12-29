@@ -6,14 +6,19 @@ public class Main {
 
         PatientManagement pm = new PatientManagement();
         doctorManagement dm = new doctorManagement();
+        AppointmentManager am = new AppointmentManager(50);
         Staff st = new Staff();
         pm.loadFromFile();
-
+        dm.loadFromFile();
+        System.out.println("--------------------------------------");
+        System.out.println("Welcome to SPS Hospital");
+        System.out.println("--------------------------------------");
         System.out.println("Login As ");
         System.out.println("1- Patient ");
         System.out.println("2- Doctor ");
         System.out.println("3- Staff ");
         System.out.println("4- Exit");
+        System.out.println("--------------------------------------");
         System.out.print("Enter your choice: ");
         int choice1 = scanner.nextInt();
         while (true) {
@@ -37,14 +42,75 @@ public class Main {
 
                         switch (choice2) {
                             case 1:
-                                System.out.print("Enter patient Id to book an appointment: ");
+                                System.out.print("Enter patient ID to book an appointment: ");
                                 int patientId = scanner.nextInt();
                                 Node curr = pm.SearchPatient(patientId);
-                                dm.searchDoctorBySpecialization(curr.PatientHealthIssue);
-//
-//                                System.out.println("Enter appointment details: ");
-//                                String appointmentDetails = scanner.nextLine();
-//                                pm.bookAppointment(patientId, appointmentDetails);
+
+                                if (curr == null) {
+                                    System.out.println("No patient found with this ID.");
+                                    break;
+                                }
+
+                                String healthIssue = curr.getPatientHealthIssue();
+                                dm.displayDoctorAccToHealthIssue(healthIssue);
+
+                                System.out.print("Choose a doctor (Enter the corresponding number): ");
+                                int doctorOption = scanner.nextInt();
+
+                                Doctor selectedDoctor = null;
+                                int doctorIndex = 1;
+
+                                for (Doctor doctor : dm.doctors) {
+                                    if (doctor != null && doctor.specialization.trim().equalsIgnoreCase(dm.findSpecialization(dm.specializationKeywords, healthIssue))) {
+                                        if (doctorIndex == doctorOption) {
+                                            selectedDoctor = doctor;
+                                            break;
+                                        }
+                                        doctorIndex++;
+                                    }
+                                }
+
+                                if (selectedDoctor == null) {
+                                    System.out.println("Invalid doctor selection.");
+                                    break;
+                                }
+
+                                System.out.println("Available time slots for Dr. " + selectedDoctor.doctorName + ":");
+                                for (int i = 0; i < selectedDoctor.availability.length; i++) {
+                                    System.out.println((i + 1) + ". " + selectedDoctor.availability[i]);
+                                }
+
+                                System.out.print("Enter the number corresponding to your preferred time slot: ");
+                                int timeSlotOption = scanner.nextInt();
+
+                                if (timeSlotOption < 1 || timeSlotOption > selectedDoctor.availability.length) {
+                                    System.out.println("Invalid time slot selection.");
+                                    break;
+                                }
+
+                                String timeSlot = selectedDoctor.availability[timeSlotOption - 1];
+
+                                // Check and book the appointment
+                                if (am != null) {
+                                    boolean isSlotAvailable = true;
+
+                                    // Check if the time slot is already taken
+                                    for (Appointment appointment : am.appointments) {
+                                        if (appointment != null &&
+                                                appointment.doctorId == selectedDoctor.id &&
+                                                appointment.timeSlot.equalsIgnoreCase(timeSlot)) {
+                                            isSlotAvailable = false;
+                                            break;
+                                        }
+                                    }
+
+                                    if (!isSlotAvailable) {
+                                        System.out.println("This time slot is already taken. Please choose a different time.");
+                                    } else {
+                                        am.appointments[am.appointmentCount++] = new Appointment(patientId, selectedDoctor.id, timeSlot);
+                                        System.out.println("Appointment booked successfully with Dr. " + selectedDoctor.doctorName + " at " + timeSlot);
+                                    }
+                                }
                                 break;
 
                             case 2:
@@ -199,7 +265,12 @@ public class Main {
                                 System.out.print("Slot Count Can't be less than 0");
                                 //send him back to the input for how many slots
                             }
+                            else if(slotCount >=20){
+                                System.out.print("Slot Can't Be Greater than 20");
+                                //send him back to the input for how many slots
+                            }
                             else {
+//                                dm.createFile();
                                 String[] availability = new String[slotCount];
                                 for (int i = 0; i < availability.length; i++) {
                                     System.out.print("Enter Doctor Availability For Slots(e.g., Tuesday 2PM): ");
@@ -242,7 +313,7 @@ public class Main {
 
                             break;
                         case 5:
-                            st.viewAllPatients();
+                            pm.DisplayDataOfPatient();
                             break;
                         case 6:
                             System.out.print("Enter the Id of the patient you want to search : ");
@@ -259,7 +330,7 @@ public class Main {
 
                             break;
                         case 9:
-                            st.viewAllDoctors();
+                            dm.displayAllDoctors();
                             break;
                         case 10:
                             System.out.print("Enter the specialization name to search for a doctor: ");

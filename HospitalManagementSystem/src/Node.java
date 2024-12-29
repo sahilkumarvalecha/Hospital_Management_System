@@ -434,7 +434,6 @@ class PatientManagement{
                 // Update the patientIdCounter
                 patientIdCounter = Math.max(patientIdCounter, id + 1);
             }
-            System.out.println("Patient data loaded successfully.");
         } catch (Exception e) {
             System.out.println("Error reading from file: " + e.getMessage());
             e.printStackTrace();

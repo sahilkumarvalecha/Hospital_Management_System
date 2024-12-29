@@ -9,6 +9,7 @@ public class Doctor {
     String specialization;
     String[] availability;
     int Number;
+
     Doctor(int id, String doctorName, String specialization, String[] availability, int number) {
         this.id = id;
         this.doctorName = doctorName;
@@ -28,6 +29,49 @@ public class Doctor {
 class doctorManagement{
     Doctor[] doctors;
     int count;
+    String[][] specializationKeywords = {
+            // Dermatologist
+            {"Dermatologist", "flu", "skin", "rash", "eczema", "acne", "psoriasis", "allergy", "hives", "dermatitis", "itching", "scars", "blemishes"},
+            // Cardiologist
+            {"Cardiologist", "heart", "chest pain", "cardio", "arrhythmia", "palpitations", "shortness of breath", "hypertension", "blood pressure", "heart attack", "angina", "tachycardia"},
+            // Orthopedist
+            {"Orthopedist", "bone", "fracture", "joint pain", "arthritis", "back pain", "dislocation", "spine", "cartilage", "tendon", "scoliosis", "osteoporosis"},
+            // Neurologist
+            {"Neurologist", "brain", "headache", "migraine", "seizure", "epilepsy", "numbness", "stroke", "dizziness", "memory loss", "neuropathy", "paralysis", "tremor", "vertigo"},
+            // Gastroenterologist
+            {"Gastroenterologist", "stomach", "abdomen", "nausea", "vomiting", "diarrhea", "constipation", "acid reflux", "ulcer", "indigestion", "bloating", "liver", "pancreas", "gastritis"},
+            // Pulmonologist
+            {"Pulmonologist", "lung", "breathing", "cough", "asthma", "bronchitis", "pneumonia", "shortness of breath", "chest tightness", "wheezing", "respiratory", "tuberculosis", "sleep apnea"},
+            // Endocrinologist
+            {"Endocrinologist", "hormone", "thyroid", "diabetes", "insulin", "metabolism", "growth", "pituitary", "adrenal", "hypothyroidism", "hyperthyroidism", "obesity", "fatigue", "glucose"},
+            // Pediatrician
+            {"Pediatrician", "child", "infant", "baby", "newborn", "fever", "vaccination", "growth", "development", "pediatric", "rash", "infection", "nutrition", "cough"},
+            // Ophthalmologist
+            {"Ophthalmologist", "eye", "vision", "blurred vision", "glasses", "contact lens", "cataract", "glaucoma", "eye strain", "red eyes", "dry eyes", "itchy eyes", "conjunctivitis"},
+            // Dentist
+            {"Dentist", "teeth", "tooth", "cavity", "gum", "bleeding gums", "toothache", "braces", "orthodontics", "dentures", "mouth", "oral hygiene", "root canal", "wisdom tooth"},
+            // Psychiatrist
+            {"Psychiatrist", "mental health", "anxiety", "depression", "stress", "panic", "bipolar", "schizophrenia", "therapy", "trauma", "insomnia", "addiction", "psychosis", "ptsd"},
+            // Urologist
+            {"Urologist", "urine", "bladder", "kidney", "prostate", "urinary", "infection", "painful urination", "stones", "incontinence"},
+            // Gynecologist
+            {"Gynecologist", "pregnancy", "period", "menstruation", "menopause", "fertility", "ovaries", "uterus", "contraception", "hormonal imbalance", "pcos", "cyst", "labor"},
+            // Oncologist
+            {"Oncologist", "cancer", "tumor", "chemotherapy", "radiation", "lump", "malignant", "benign", "oncology", "breast cancer", "leukemia", "lymphoma", "metastasis", "biopsy"},
+            // ENT Specialist
+            {"ENT Specialist", "ear", "nose", "throat", "hearing", "sinus", "tonsils", "voice", "allergies", "snoring", "vertigo", "hoarseness", "nasal congestion", "tinnitus"},
+            // Nephrologist
+            {"Nephrologist", "kidney", "renal", "dialysis", "urinary tract", "nephrology", "edema", "proteinuria", "hematuria", "creatinine", "electrolytes", "kidney failure", "transplant"},
+            // General Physician
+            {"General Physician", "fever", "cold", "flu", "body ache", "fatigue", "infection", "weakness", "checkup", "general health", "headache", "cough", "pain"},
+            // Rheumatologist
+            {"Rheumatologist", "arthritis", "joint pain", "inflammation", "stiffness", "autoimmune", "lupus", "fibromyalgia", "gout", "connective tissue", "swelling", "rheumatoid"},
+            // Allergist
+            {"Allergist", "allergy", "asthma", "sneezing", "rash", "itching", "hay fever", "eczema", "food allergy", "dust", "pollen", "hives", "wheezing"},
+            // Surgeon
+            {"Surgeon", "operation", "surgery", "appendix", "hernia", "biopsy", "tumor", "incision", "post-surgery", "recovery", "laparoscopy", "trauma"}
+    };
+
     doctorManagement(){
         doctors = new Doctor[10];
         count = 0;
@@ -71,6 +115,7 @@ class doctorManagement{
         }
         doctors[count++] = new Doctor(id, name, specialization, availability, number);
         doctors[count - 1].availability = availability; // Set availability directly
+        saveToFile(doctors,count);
     }
     public void deleteDoctor(int id){
         for (int i=0; i< count; i++){
@@ -85,6 +130,7 @@ class doctorManagement{
             }
         }
         System.out.println("Doctor not found");
+        saveToFile(doctors,count);
     }
     public void updateDoctor(int id, String name, String specialization, String[] availability ,int number){
         for (Doctor doctor:doctors){
@@ -99,16 +145,68 @@ class doctorManagement{
             System.out.println("Doctor with ID " +id+ " not found ");
         }
     }
+    public static String findSpecialization(String[][] specializationKeywords, String patientInput) {
+        // Convert patient input to lowercase
+        String lowerCaseInput = patientInput.toLowerCase();
+
+        // Loop through each specialization row
+        for (int i = 0; i < specializationKeywords.length; i++) {
+            String specialization = specializationKeywords[i][0]; // First column is specialization
+            for (int j = 1; j < specializationKeywords[i].length; j++) {
+                String keyword = specializationKeywords[i][j].toLowerCase();
+                if (lowerCaseInput.contains(keyword)) {
+                    return specialization; // Match found
+                }
+            }
+        }
+
+        return null; // No match found
+    }
+    public void displayDoctorAccToHealthIssue(String healthIssue) {
+        String docAccToIssue = findSpecialization(specializationKeywords,healthIssue);
+        if(docAccToIssue == null){
+            System.out.println("No Doctors Available To Treat This Issue");
+            return;
+        }
+        if (count == 0) {
+            System.out.println("No Doctors are available");
+            return;
+        }
+        int k =1;
+        boolean doctorFound = false;// Track if any doctor is found
+        System.out.println("Below Doctor Is Available For Appointment: ");
+        for (Doctor doctor : doctors) {
+            if (doctor != null && doctor.specialization.trim().equalsIgnoreCase(docAccToIssue.trim())){
+                doctorFound = true;
+                System.out.print(k +") Doctor name: " + doctor.doctorName +
+                        ", Doctor specialization: " + doctor.specialization +
+                        ", Doctor number: " + doctor.Number +
+                        ", Doctor availability timing: ");
+                k++;
+                for (int i = 1; i < doctor.availability.length; i++) {
+                    System.out.print( i + ": " + doctor.availability[i]);
+                }
+                System.out.println();
+            }
+        }
+        if(!doctorFound){
+            System.out.println("No doctor found to treat " + healthIssue);
+
+        }
+    }
+
     public void searchDoctorBySpecialization(String specialization) {
         if (count == 0) {
             System.out.println("No Doctors are available");
             return;
         }
         boolean doctorFound = false;  // Track if any doctor is found
+        int k =0;
         for (Doctor doctor : doctors) {
             if (doctor.specialization.equalsIgnoreCase(specialization)){
                 doctorFound = true;
-                System.out.print(" Doctor name: " + doctor.doctorName +
+                System.out.print("Below Doctor Is Available For Appointment: ");
+                System.out.println( k + ") Doctor name: " + doctor.doctorName +
                         ", Doctor specialization: " + doctor.specialization +
                         ", Doctor number: " + doctor.Number +
                         ", Doctor availability timing: ");
@@ -117,6 +215,7 @@ class doctorManagement{
                 }
                 System.out.println();
             }
+            k++;
         }
         if(!doctorFound){
             System.out.println("No doctor found with specialization " +specialization);
@@ -195,6 +294,19 @@ class doctorManagement{
             }
         }
     }
+    public void createFile(){
+        File myFile = new File("doctorData.txt");
+        try {
+            if (myFile.createNewFile()) {
+                System.out.println("File created successfully.");
+            } else {
+                System.out.println("File already exists.");
+            }
+        } catch (IOException e) {
+            System.out.println("Unable to create file");
+            e.printStackTrace();
+        }
+    }
     // Save all doctor details to a file
     public static void saveToFile(Doctor[] doctors, int count) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("doctorData.txt"))) {
@@ -220,11 +332,9 @@ class doctorManagement{
             System.out.println("No previous doctor data found.");
             return;
         }
-
         try (Scanner sc = new Scanner(file)) {
             while (sc.hasNextLine()) {
                 String line = sc.nextLine();
-                // Split the line by commas to separate each field
                 String[] fields = line.split(", ");
                 int id = Integer.parseInt(fields[0].split(":")[1].trim());
                 String name = fields[1].split(":")[1].trim();
@@ -232,13 +342,16 @@ class doctorManagement{
                 int number = Integer.parseInt(fields[3].split(":")[1].trim());
                 String[] availability = fields[4].split(":")[1].trim().split(";");
 
-                // Add the loaded doctor to the list
-                this.addDoctor(id, name, specialization, availability, number);
+                // Add the doctor directly to the array
+                if (count == doctors.length) {
+                    resize();
+                }
+                doctors[count++] = new Doctor(id, name, specialization, availability, number);
             }
-            System.out.println("Doctor data loaded successfully.");
         } catch (IOException | NumberFormatException e) {
             System.out.println("Error loading doctor data: " + e.getMessage());
         }
     }
+
 
 }
