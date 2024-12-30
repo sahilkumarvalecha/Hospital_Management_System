@@ -57,6 +57,7 @@ class AppointmentManager {
     }
     public void loadFromFile() {
         File file = new File("appointmentData.txt");
+        PatientManagement pm = new PatientManagement();
         if (!file.exists()) {
             System.out.println("No previous appointment data found.");
             return;
@@ -71,7 +72,7 @@ class AppointmentManager {
                 String timeSlot = fields[2].split(":")[1].trim();
 
                 appointments[appointmentCount++] = new Appointment(patientId, doctorId, timeSlot);
-                System.out.println("Loaded appointment: Patient ID " + patientId + ", Doctor ID " + doctorId + ", Time Slot " + timeSlot); // Debug log
+                pm.getPatientBillAmount(patientId);
             }
         } catch (IOException | NumberFormatException e) {
             System.out.println("Error loading appointment data: " + e.getMessage());

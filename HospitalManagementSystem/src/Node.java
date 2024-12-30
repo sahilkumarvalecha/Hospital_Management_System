@@ -38,6 +38,9 @@ public class Node { // Static variable to keep track of the ID across instances
         return PatientHealthIssue;
     }
 
+    public double getBillAmount() {
+        return billAmount;
+    }
 
     public void bookAppointment(String appointmentDetails){
         this.appointmentDetails = appointmentDetails;
@@ -91,7 +94,7 @@ public class Node { // Static variable to keep track of the ID across instances
         }
     }
 }
-class PatientManagement{
+class PatientManagement {
     Node head;
     Node last;
     private int patientIdCounter = 1;
@@ -106,10 +109,10 @@ class PatientManagement{
         return patientIdCounter;
     }
 
-    private int patientIdInitilizer(){
+    private int patientIdInitilizer() {
         File myFile = new File("patientData.txt");
         int maxId = 0;
-        if(!myFile.exists()){
+        if (!myFile.exists()) {
             return 1;
         }
         try (Scanner sc = new Scanner(myFile)) {
@@ -127,17 +130,17 @@ class PatientManagement{
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
-        return maxId+1;
+        return maxId + 1;
     }
 
-    public boolean isEmpty(){
-        if(head == null){
-            return  true;
+    public boolean isEmpty() {
+        if (head == null) {
+            return true;
         }
         return false;
     }
 
-    public void createFile(){
+    public void createFile() {
         File myFile = new File("patientData.txt");
         try {
             if (myFile.createNewFile()) {
@@ -150,14 +153,14 @@ class PatientManagement{
             e.printStackTrace();
         }
     }
-    public void insertPatient(String PatientName, int PatientAge, String PatientPhoneNUM, String PatientGender, String PatientHealthIssue){
-        Node newnode = new Node(patientIdCounter, PatientName,PatientAge,PatientPhoneNUM,PatientGender,PatientHealthIssue);
+
+    public void insertPatient(String PatientName, int PatientAge, String PatientPhoneNUM, String PatientGender, String PatientHealthIssue) {
+        Node newnode = new Node(patientIdCounter, PatientName, PatientAge, PatientPhoneNUM, PatientGender, PatientHealthIssue);
         patientIdCounter++;
-        if(isEmpty()){
+        if (isEmpty()) {
             head = newnode;
             last = newnode;
-        }
-        else{
+        } else {
             last.next = newnode;
             last = newnode;
         }
@@ -166,14 +169,14 @@ class PatientManagement{
     }
 
     public void writeInFile(Node patient) {
-        try{
+        try {
             FileWriter fileWriter = new FileWriter("patientData.txt", true);
-            fileWriter.write("Patient ID: " +patient.patientId+ " , ");
-            fileWriter.write("Patient name: " +patient.PatientName+ " , ");
-            fileWriter.write("Patient age: " +patient.PatientAge+ " , ");
-            fileWriter.write("Patient phone number: " +patient.PatientPhoneNUM+ " , ");
-            fileWriter.write("Patient Gender: " +patient.PatientGender+ " , ");
-            fileWriter.write("Patient health issue: " +patient.PatientHealthIssue);
+            fileWriter.write("Patient ID: " + patient.patientId + " , ");
+            fileWriter.write("Patient name: " + patient.PatientName + " , ");
+            fileWriter.write("Patient age: " + patient.PatientAge + " , ");
+            fileWriter.write("Patient phone number: " + patient.PatientPhoneNUM + " , ");
+            fileWriter.write("Patient Gender: " + patient.PatientGender + " , ");
+            fileWriter.write("Patient health issue: " + patient.PatientHealthIssue);
             fileWriter.write("\n");
 
             fileWriter.close();
@@ -185,10 +188,10 @@ class PatientManagement{
     }
 
 
-    public void readFromFile(){
+    public void readFromFile() {
         File myfile = new File("patientData.txt");
-        try(Scanner sc = new Scanner(myfile)) {
-            while (sc.hasNextLine()){
+        try (Scanner sc = new Scanner(myfile)) {
+            while (sc.hasNextLine()) {
                 String line = sc.nextLine();
                 System.out.println(line);
             }
@@ -215,8 +218,8 @@ class PatientManagement{
             }
             current = current.next; // Move to the next node
         }
-        if (found){
-            System.out.println("Patient found with Id " +patientId);
+        if (found) {
+            System.out.println("Patient found with Id " + patientId);
             System.out.println("Patient Details:");
             System.out.println("Name: " + current.PatientName +
                     ", Age: " + current.PatientAge +
@@ -231,6 +234,28 @@ class PatientManagement{
         }
         return null;
     }
+
+    public void getPatientBillAmount(int Id) {
+        if (isEmpty()) {
+            System.out.println("The list is empty. Patient not found.");
+            return;
+        }
+
+        Node current = head;
+        boolean found = false;
+
+
+        while (current != null) {
+            if (current.patientId == Id) { // Case-insensitive match
+                found = true;
+               current.billAmount += 1000;
+            }
+            current = current.next; // Move to the next node
+        }
+            System.out.println("No patient found with Id" + Id);
+    }
+
+
     public void bookAppointment(int patientId, String appointmentDetails){
         Node curr = head;
         while (curr != null){

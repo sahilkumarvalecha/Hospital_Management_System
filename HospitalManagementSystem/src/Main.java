@@ -108,13 +108,14 @@ public class Main {
                                     if (!isSlotAvailable) {
                                         System.out.println("This time slot is already taken. Please choose a different time.");
                                     } else {
-                                        am.appointments[am.appointmentCount++] = new Appointment(patientId, selectedDoctor.id, timeSlot);
-                                        try {
-                                            am.writeAppointmentsInFile(patientId,selectedDoctor.id,timeSlot);
-                                        } catch (IOException e) {
-                                            throw new RuntimeException(e);
-                                        }
-                                        System.out.println("Appointment booked successfully with " + selectedDoctor.doctorName + " at " + timeSlot);
+                                            am.appointments[am.appointmentCount++] = new Appointment(patientId, selectedDoctor.id, timeSlot);
+                                            pm.getPatientBillAmount(patientId);
+                                            try {
+                                                am.writeAppointmentsInFile(patientId,selectedDoctor.id,timeSlot);
+                                            } catch (IOException e) {
+                                                throw new RuntimeException(e);
+                                            }
+                                            System.out.println("Appointment booked successfully with " + selectedDoctor.doctorName + " at " + timeSlot);
                                     }
                                 }
                                 break;
@@ -141,14 +142,21 @@ public class Main {
                             case 5:
                                 System.out.print("Enter patient Id to view bill: ");
                                 int searchingpatientId = scanner.nextInt();
-                                for (Appointment appointment : am.appointments) {
-                                    if (appointment != null &&
-                                            appointment.patientId == searchingpatientId) {
-                                        String currDoc = dm.searchDoctorById(appointment.doctorId);
-                                        System.out.println("You have a appointment with "+ currDoc + " at:" +appointment.timeSlot);
 
+                                Node current = pm.head;
+                                boolean found = false;
+
+                                while (current != null) {
+                                    if (current.patientId == searchingpatientId) {
+                                        System.out.println("Your total bill is PKR " + current.getBillAmount());
+                                        found = true;
                                         break;
                                     }
+                                    current = current.next;
+                                }
+
+                                if (!found) {
+                                    System.out.println("No patient found with ID: " + searchingpatientId);
                                 }
                                 break;
                             case 6:
