@@ -91,4 +91,47 @@ class AppointmentManager {
                     ", Time Slot: " + appointments[i].timeSlot);
         }
     }
+    public void cancelAppointment(int patientID) {
+        boolean appointmentFound = false;
+
+        // Load appointments from file
+        loadFromFile();
+
+        // Find and cancel the appointment from the array
+        for (int i = 0; i < appointmentCount; i++) {
+            if (appointments[i] != null && appointments[i].patientId == patientID) {
+                appointmentFound = true;
+                // Shift the array to remove the canceled appointment
+                for (int j = i; j < appointmentCount - 1; j++) {
+                    appointments[j] = appointments[j + 1];
+                }
+                appointments[--appointmentCount] = null; // Reduce the count
+                System.out.println("Appointment canceled for Patient ID: " + patientID);
+                break;
+            }
+        }
+
+        if (!appointmentFound) {
+            System.out.println("No appointment found for Patient ID: " + patientID);
+            return;
+        }
+
+        // Step 3: Rewrite the file with the remaining appointments
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("appointmentData.txt"))) {
+            for (int i = 0; i < appointmentCount; i++) {
+                Appointment appointment = appointments[i];
+                if (appointment != null) {
+                    writer.write("Doctor ID: " + appointment.doctorId +
+                            ", Patient ID: " + appointment.patientId +
+                            ", Time Slot: " + appointment.timeSlot);
+                    writer.newLine();
+                }
+            }
+            System.out.println("Appointment data updated successfully.");
+        } catch (IOException e) {
+            System.out.println("Error updating appointment data: " + e.getMessage());
+        }
+    }
+
+
 }

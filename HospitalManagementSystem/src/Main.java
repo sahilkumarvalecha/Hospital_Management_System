@@ -76,7 +76,7 @@ public class Main {
                                     break;
                                 }
 
-                                System.out.println("Available time slots for Dr. " + selectedDoctor.doctorName + ":");
+                                System.out.println("Available time slots for " + selectedDoctor.doctorName + ":");
                                 for (int i = 0; i < selectedDoctor.availability.length; i++) {
                                     System.out.println((i + 1) + ". " + selectedDoctor.availability[i]);
                                 }
@@ -122,19 +122,17 @@ public class Main {
                                 System.out.print("Enter patient Id to view appointment details: ");
                                 int searchingPatientId = scanner.nextInt();
                                 for (Appointment appointment : am.appointments) {
-                                    if (appointment != null &&
-                                            appointment.patientId == searchingPatientId) {
-                                        String currDoc = dm.searchDoctorById(appointment.doctorId);
-                                        System.out.println("You have a appointment with "+ currDoc + " at:" +appointment.timeSlot);
+                                    if (appointment != null && appointment.patientId == searchingPatientId) {
+                                        System.out.println("You have a appointment with " +dm.searchDoctorById(appointment.doctorId)+ " at:" +appointment.timeSlot);
                                         break;
                                     }
                                 }
 
                                 break;
                             case 3:
-                                System.out.print("Enter patient name to cancel an appointment: ");
-                                String pName = scanner.nextLine();
-                                pm.cancelAppointment(pName);
+                                System.out.println("Enter patient id to delete appointment: ");
+                                searchingPatientId = scanner.nextInt();
+                                am.cancelAppointment(searchingPatientId);
                                 break;
                             case 4:
 //

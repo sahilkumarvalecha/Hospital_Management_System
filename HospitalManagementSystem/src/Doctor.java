@@ -192,21 +192,15 @@ class doctorManagement{
     }
     public String searchDoctorById(int Id) {
         if (count == 0) {
-            System.out.println("No Doctors are available");
-            return null;
+            return "No Doctors are available";
         }
         boolean doctorFound = false;  // Track if any doctor is found
                 for (Doctor doctor : doctors) {
             if (doctor.id == Id){
-                doctorFound = true;
-                return doctor.toString();
+                return doctor.doctorName;
             }
         }
-        if(!doctorFound){
-            System.out.println("No doctor found with Id" + Id);
-            return null;
-        }
-        return null;
+        return "No doctor found with Id " + Id;
     }
     public void searchDoctorBySpecialization(String specialization) {
         if (count == 0) {
