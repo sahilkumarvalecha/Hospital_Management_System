@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.util.Scanner;
 
 public class Main {
@@ -6,10 +7,11 @@ public class Main {
 
         PatientManagement pm = new PatientManagement();
         doctorManagement dm = new doctorManagement();
-        AppointmentManager am = new AppointmentManager(50);
+        AppointmentManager am = new AppointmentManager(20);
         Staff st = new Staff();
         pm.loadFromFile();
         dm.loadFromFile();
+        am.loadFromFile();
         System.out.println("--------------------------------------");
         System.out.println("Welcome to SPS Hospital");
         System.out.println("--------------------------------------");
@@ -45,7 +47,6 @@ public class Main {
                                 System.out.print("Enter patient ID to book an appointment: ");
                                 int patientId = scanner.nextInt();
                                 Node curr = pm.SearchPatient(patientId);
-
                                 if (curr == null) {
                                     System.out.println("No patient found with this ID.");
                                     break;
@@ -57,7 +58,7 @@ public class Main {
                                 System.out.print("Choose a doctor (Enter the corresponding number): ");
                                 int doctorOption = scanner.nextInt();
 
-                                Doctor selectedDoctor = null;
+                                Doctor selectedDoctor =null;
                                 int doctorIndex = 1;
 
                                 for (Doctor doctor : dm.doctors) {
@@ -108,15 +109,27 @@ public class Main {
                                         System.out.println("This time slot is already taken. Please choose a different time.");
                                     } else {
                                         am.appointments[am.appointmentCount++] = new Appointment(patientId, selectedDoctor.id, timeSlot);
-                                        System.out.println("Appointment booked successfully with Dr. " + selectedDoctor.doctorName + " at " + timeSlot);
+                                        try {
+                                            am.writeAppointmentsInFile(patientId,selectedDoctor.id,timeSlot);
+                                        } catch (IOException e) {
+                                            throw new RuntimeException(e);
+                                        }
+                                        System.out.println("Appointment booked successfully with " + selectedDoctor.doctorName + " at " + timeSlot);
                                     }
                                 }
                                 break;
-
                             case 2:
-                                System.out.print("Enter patient name to view appointment details: ");
-                                String patientName = scanner.nextLine();
-                                pm.viewAppointments(patientName);
+                                System.out.print("Enter patient Id to view appointment details: ");
+                                int searchingPatientId = scanner.nextInt();
+                                for (Appointment appointment : am.appointments) {
+                                    if (appointment != null &&
+                                            appointment.patientId == searchingPatientId) {
+                                        String currDoc = dm.searchDoctorById(appointment.doctorId);
+                                        System.out.println("You have a appointment with "+ currDoc + " at:" +appointment.timeSlot);
+                                        break;
+                                    }
+                                }
+
                                 break;
                             case 3:
                                 System.out.print("Enter patient name to cancel an appointment: ");
@@ -128,8 +141,17 @@ public class Main {
                                 break;
 
                             case 5:
-//                            System.out.print("Enter the filename to save the patients: ");
-//                            pm.savePatientsToFile("filename.txt");
+                                System.out.print("Enter patient Id to view bill: ");
+                                int searchingpatientId = scanner.nextInt();
+                                for (Appointment appointment : am.appointments) {
+                                    if (appointment != null &&
+                                            appointment.patientId == searchingpatientId) {
+                                        String currDoc = dm.searchDoctorById(appointment.doctorId);
+                                        System.out.println("You have a appointment with "+ currDoc + " at:" +appointment.timeSlot);
+
+                                        break;
+                                    }
+                                }
                                 break;
                             case 6:
                                 System.out.println("Going back to the main menu...");

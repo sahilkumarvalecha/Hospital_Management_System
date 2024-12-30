@@ -180,12 +180,8 @@ class doctorManagement{
                 doctorFound = true;
                 System.out.print(k +") Doctor name: " + doctor.doctorName +
                         ", Doctor specialization: " + doctor.specialization +
-                        ", Doctor number: " + doctor.Number +
-                        ", Doctor availability timing: ");
+                        ", Doctor number: " + doctor.Number );
                 k++;
-                for (int i = 1; i < doctor.availability.length; i++) {
-                    System.out.print( i + ": " + doctor.availability[i]);
-                }
                 System.out.println();
             }
         }
@@ -194,7 +190,24 @@ class doctorManagement{
 
         }
     }
-
+    public String searchDoctorById(int Id) {
+        if (count == 0) {
+            System.out.println("No Doctors are available");
+            return null;
+        }
+        boolean doctorFound = false;  // Track if any doctor is found
+                for (Doctor doctor : doctors) {
+            if (doctor.id == Id){
+                doctorFound = true;
+                return doctor.toString();
+            }
+        }
+        if(!doctorFound){
+            System.out.println("No doctor found with Id" + Id);
+            return null;
+        }
+        return null;
+    }
     public void searchDoctorBySpecialization(String specialization) {
         if (count == 0) {
             System.out.println("No Doctors are available");

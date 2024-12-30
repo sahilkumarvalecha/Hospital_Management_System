@@ -1,3 +1,4 @@
+import java.io.*;
 import java.util.Scanner;
 
 class Appointment {
@@ -20,64 +21,62 @@ class AppointmentManager {
         appointments = new Appointment[maxAppointments];
         appointmentCount = 0;
     }
-
-    public void allocateDoctorToPatient(int patientId, String healthIssue, Doctor[] doctors, String[][] specializationKeywords) {
-        String specialization = findSpecialization(specializationKeywords, healthIssue);
-        if (specialization == null) {
-            System.out.println("No specialization found for the given health issue.");
-            return;
-        }
-
-        Doctor[] matchingDoctors = new Doctor[doctors.length];
-        int matchCount = 0;
-        for (Doctor doctor : doctors) {
-            if (doctor != null && doctor.specialization.equalsIgnoreCase(specialization)) {
-                System.out.println((matchCount + 1) + ". " + doctor.doctorName + " (" + doctor.specialization + ")");
-                matchingDoctors[matchCount++] = doctor;
+    public void createFile(){
+        File myFile = new File("appointmentData.txt");
+        try {
+            if (myFile.createNewFile()) {
+                System.out.println("File created successfully.");
+            } else {
+                System.out.println("File already exists.");
             }
+        } catch (IOException e) {
+            System.out.println("Unable to create file");
+            e.printStackTrace();
         }
-
-        if (matchCount == 0) {
-            System.out.println("No doctors available for the specified health issue.");
+    }
+    public void writeAppointmentsInFile(int patientId,int doctorId, String timeSlot) throws IOException {
+        if (appointmentCount == 0) {
+            System.out.println("No appointments booked yet.");
             return;
         }
-
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Enter the number corresponding to the doctor you want to choose:");
-        int choice = scanner.nextInt();
-
-        if (choice < 1 || choice > matchCount) {
-            System.out.println("Invalid choice. Please try again.");
-            return;
-        }
-
-        Doctor selectedDoctor = matchingDoctors[choice - 1];
-
-        System.out.println("Available time slots for Dr. " + selectedDoctor.doctorName + ":");
-        for (String time : selectedDoctor.availability) {
-            System.out.println("- " + time);
-        }
-
-        System.out.println("Enter your preferred time slot (e.g., Monday 10AM):");
-        String timeSlot = scanner.next();
-
-        // Check if the time slot is already taken
-        for (Appointment appointment : appointments) {
-            if (appointment != null &&
-                    appointment.doctorId == selectedDoctor.id &&
-                    appointment.timeSlot.equalsIgnoreCase(timeSlot)) {
-                System.out.println("This time slot is already taken. Please choose a different time.");
-                return;
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("appointmentData.txt", true))) {
+            for (int i = 0; i < appointmentCount; i++) {
+                Appointment appointment = appointments[i];
+                if (appointment != null) {
+                    writer.write("Doctor ID:" + doctorId +
+                            ", Patient ID:" + patientId +
+                            ", timeSlot:" + timeSlot);
+                    writer.newLine();
+                }
             }
+            System.out.println("Appointment Data saved successfully.");
+        } catch (IOException e) {
+            System.out.println("Error saving appointment data: " + e.getMessage());
+            e.printStackTrace();
         }
-
-        if (appointmentCount >= appointments.length) {
-            System.out.println("Appointment list is full. Cannot book more appointments.");
+    }
+    public void loadFromFile() {
+        File file = new File("appointmentData.txt");
+        if (!file.exists()) {
+            System.out.println("No previous appointment data found.");
             return;
         }
+        try (Scanner sc = new Scanner(file)) {
+            while (sc.hasNextLine()) {
+                String line = sc.nextLine();
+                System.out.println("Reading line: " + line); // Debug log
+                String[] fields = line.split(", ");
+                int doctorId = Integer.parseInt(fields[0].split(":")[1].trim());
+                int patientId = Integer.parseInt(fields[1].split(":")[1].trim());
+                String timeSlot = fields[2].split(":")[1].trim();
 
-        appointments[appointmentCount++] = new Appointment(patientId, selectedDoctor.id, timeSlot);
-        System.out.println("Appointment booked successfully with Dr. " + selectedDoctor.doctorName + " at " + timeSlot);
+                appointments[appointmentCount++] = new Appointment(patientId, doctorId, timeSlot);
+                System.out.println("Loaded appointment: Patient ID " + patientId + ", Doctor ID " + doctorId + ", Time Slot " + timeSlot); // Debug log
+            }
+        } catch (IOException | NumberFormatException e) {
+            System.out.println("Error loading appointment data: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     public void displayAppointments() {
@@ -91,16 +90,5 @@ class AppointmentManager {
                     ", Doctor ID: " + appointments[i].doctorId +
                     ", Time Slot: " + appointments[i].timeSlot);
         }
-    }
-
-    private String findSpecialization(String[][] specializationKeywords, String healthIssue) {
-        for (String[] keywords : specializationKeywords) {
-            for (int i = 1; i < keywords.length; i++) {
-                if (healthIssue.equalsIgnoreCase(keywords[i])) {
-                    return keywords[0];
-                }
-            }
-        }
-        return null;
     }
 }
