@@ -72,7 +72,7 @@ class AppointmentManager {
                 String timeSlot = fields[2].split(":")[1].trim();
 
                 appointments[appointmentCount++] = new Appointment(patientId, doctorId, timeSlot);
-                pm.getPatientBillAmount(patientId);
+             //   pm.getPatientBillAmount(patientId);
             }
         } catch (IOException | NumberFormatException e) {
             System.out.println("Error loading appointment data: " + e.getMessage());

@@ -209,8 +209,35 @@ class PatientManagement {
             e.printStackTrace();
         }
     }
-    public void addBill(double amount){
-        billAmount += amount;
+    public void updatePatientBill(int patientId, int amount){
+        Node curr = head;
+        while (curr != null){
+            if (curr.patientId == patientId){
+                curr.billAmount += amount;
+                break;
+            }
+            curr = curr.next;
+        }
+        updateFile();
+    }
+    public void updateFile(){
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("patientData.txt"))) {
+            Node current = head;
+            while (current != null) {
+                writer.write("Patient ID: " + current.patientId + " , ");
+                writer.write("Patient name: " + current.PatientName + " , ");
+                writer.write("Patient age: " + current.PatientAge + " , ");
+                writer.write("Patient phone number: " + current.PatientPhoneNUM + " , ");
+                writer.write("Patient Gender: " + current.PatientGender + " , ");
+                writer.write("Patient health issue: " + current.PatientHealthIssue + " , ");
+                writer.write("Patient Bill : " + current.billAmount);
+                writer.newLine();
+                current = current.next;
+            }
+        } catch (IOException e) {
+            System.out.println("Error writing patient data to file: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     public Node SearchPatient(int patientId) {
@@ -462,9 +489,11 @@ class PatientManagement {
                 String phone = data[3].split(":")[1].trim();
                 String gender = data[4].split(":")[1].trim();
                 String healthIssue = data[5].split(":")[1].trim();
+                double billAmount = Double.parseDouble(data[6].split(":")[1]);
 
                 // Create a new node without writing back to the file
                 Node newNode = new Node(id, name, age, phone, gender, healthIssue);
+                newNode.billAmount = billAmount;
                 if (isEmpty()) {
                     head = newNode;
                     last = newNode;

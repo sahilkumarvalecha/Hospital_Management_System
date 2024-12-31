@@ -7,7 +7,7 @@ public class Main {
 
         PatientManagement pm = new PatientManagement();
         doctorManagement dm = new doctorManagement();
-        AppointmentManager am = new AppointmentManager(20);
+        AppointmentManager am = new AppointmentManager(100);
       //  Billing b = new Billing();
         Staff st = new Staff();
         pm.loadFromFile();
@@ -118,7 +118,7 @@ public class Main {
                                             }
                                             System.out.println("Appointment booked successfully with " + selectedDoctor.doctorName + " at " + timeSlot);
                                     }
-
+                                    pm.updatePatientBill(patientId, 1000);
                                    // b.updatePatientFile(patientId, curr.PatientName, curr.PatientAge, curr.PatientPhoneNUM, curr.PatientGender, curr.PatientHealthIssue);
                                 }
 
