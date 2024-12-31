@@ -240,6 +240,42 @@ class PatientManagement {
         }
     }
 
+    public void payMyBill(int patientId){
+        Node curr = head;
+        boolean found = false;
+        while (curr != null){
+            if (curr.patientId == patientId){
+                found = true;
+                System.out.println("Patient ID: " + curr.patientId + " , Name: " + curr.PatientName);
+                System.out.println("Current Bill: " + curr.billAmount);
+                if (curr.billAmount == 0){
+                    System.out.println("Your bill is zero! you haven't booked appointment yet");
+                    return;
+                }
+                System.out.println("Do you want to pay the bill now? 1. Yes  2. No");
+
+                // Take user input
+                Scanner sc = new Scanner(System.in);
+                int choice = sc.nextInt();
+
+                if (choice == 1){
+                    curr.billAmount = 0;
+                    System.out.println("Bill payed successfully for patient ID: " +curr.patientId);
+                    updateFile();
+                }else if (choice == 2){
+                    System.out.println("Payment cancelled ");
+                }else {
+                    System.out.println("Wrong choice! ");
+                }
+                break;
+            }
+
+            curr = curr.next;
+        }
+        if (!found) {
+            System.out.println("Patient with ID " + patientId + " not found.");
+        }
+    }
     public Node SearchPatient(int patientId) {
         if (isEmpty()) {
             System.out.println("The list is empty. Patient not found.");

@@ -135,7 +135,7 @@ public class Main {
 
                                 break;
                             case 3:
-                                System.out.println("Enter patient id to delete appointment: ");
+                                System.out.print("Enter patient id to delete appointment: ");
                                 searchingPatientId = scanner.nextInt();
                                 am.cancelAppointment(searchingPatientId);
                                 break;
@@ -144,7 +144,9 @@ public class Main {
                                 break;
 
                             case 5:
-
+                                System.out.print("Enter patient id to pay Bill: ");
+                                searchingPatientId = scanner.nextInt();
+                                pm.payMyBill(searchingPatientId);
                                 break;
                             case 6:
                                 System.out.println("Going back to the main menu...");
