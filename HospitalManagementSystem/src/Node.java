@@ -1,3 +1,4 @@
+import javax.swing.plaf.IconUIResource;
 import java.io.*;
 import java.util.Scanner;
 
@@ -246,7 +247,7 @@ class PatientManagement {
         while (curr != null){
             if (curr.patientId == patientId){
                 found = true;
-                System.out.println("Patient ID: " + curr.patientId + " , Name: " + curr.PatientName);
+                System.out.println(" Name: " + curr.PatientName);
                 System.out.println("Current Bill: " + curr.billAmount);
                 if (curr.billAmount == 0){
                     System.out.println("Your bill is zero! you haven't booked appointment yet");
@@ -260,7 +261,7 @@ class PatientManagement {
 
                 if (choice == 1){
                     curr.billAmount = 0;
-                    System.out.println("Bill payed successfully for patient ID: " +curr.patientId);
+                    System.out.println("Bill paid successfully! ");
                     updateFile();
                 }else if (choice == 2){
                     System.out.println("Payment cancelled ");
@@ -276,6 +277,18 @@ class PatientManagement {
             System.out.println("Patient with ID " + patientId + " not found.");
         }
     }
+    public void showBill(int patientId){
+        loadFromFile();
+        Node curr = head;
+        while (curr != null) {
+            if (curr.patientId == patientId) {
+                System.out.println(" Name: " + curr.PatientName);
+                System.out.println(" Current Bill: " + curr.billAmount);
+            }
+            curr = curr.next;
+        }
+    }
+
     public Node SearchPatient(int patientId) {
         if (isEmpty()) {
             System.out.println("The list is empty. Patient not found.");

@@ -34,7 +34,7 @@ class AppointmentManager {
             e.printStackTrace();
         }
     }
-    public void writeAppointmentsInFile(int patientId,int doctorId, String timeSlot) throws IOException {
+    public void writeAppointmentsInFile(int patientId,int doctorId, String timeSlot){
         if (appointmentCount == 0) {
             System.out.println("No appointments booked yet.");
             return;
@@ -42,6 +42,7 @@ class AppointmentManager {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("appointmentData.txt", true))) {
             for (int i = 0; i < appointmentCount; i++) {
                 Appointment appointment = appointments[i];
+
                 if (appointment != null) {
                     writer.write("Doctor ID:" + doctorId +
                             ", Patient ID:" + patientId +

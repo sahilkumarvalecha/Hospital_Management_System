@@ -2,7 +2,7 @@ import java.io.IOException;
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         Scanner scanner = new Scanner(System.in);
 
         PatientManagement pm = new PatientManagement();
@@ -111,12 +111,8 @@ public class Main {
                                     } else {
                                             am.appointments[am.appointmentCount++] = new Appointment(patientId, selectedDoctor.id, timeSlot);
 
-                                            try {
-                                                am.writeAppointmentsInFile(patientId,selectedDoctor.id,timeSlot);
-                                            } catch (IOException e) {
-                                                throw new RuntimeException(e);
-                                            }
-                                            System.out.println("Appointment booked successfully with " + selectedDoctor.doctorName + " at " + timeSlot);
+                                        am.writeAppointmentsInFile(patientId,selectedDoctor.id,timeSlot);
+                                        System.out.println("Appointment booked successfully with " + selectedDoctor.doctorName + " at " + timeSlot);
                                     }
                                     pm.updatePatientBill(patientId, 1000);
                                    // b.updatePatientFile(patientId, curr.PatientName, curr.PatientAge, curr.PatientPhoneNUM, curr.PatientGender, curr.PatientHealthIssue);
@@ -142,7 +138,6 @@ public class Main {
                             case 4:
 //
                                 break;
-
                             case 5:
                                 System.out.print("Enter patient id to pay Bill: ");
                                 searchingPatientId = scanner.nextInt();
@@ -222,7 +217,7 @@ public class Main {
                     System.out.println("8. Update Doctor Schedule");
                     System.out.println("9. View All Doctors");
                     System.out.println("10. Search For A Doctor");
-                    System.out.println("11. Generate Bill For Patient");
+                    System.out.println("11. Show Bill For Patient");
                     System.out.println("12. View All Billing Records");
                     System.out.println("13. Go Back To Main Menu");
                     System.out.println("14. Exit");
@@ -355,7 +350,9 @@ public class Main {
                             st.searchDoctor(specialization);
                             break;
                         case 11:
-
+                            System.out.print("Enter patient Id for checking bill: ");
+                            patientId = scanner.nextInt();
+                            st.showBillForPatient(patientId);
                             break;
                         case 12:
 

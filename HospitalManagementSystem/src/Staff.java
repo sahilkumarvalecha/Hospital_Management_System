@@ -30,4 +30,8 @@ public class Staff {
     public void searchDoctor(String specialization){
         dm.searchDoctorBySpecialization(specialization);
     }
+    public void showBillForPatient(int patientID){
+        pm.showBill(patientID);
+    }
+
 }
