@@ -96,7 +96,7 @@ public class Main {
                                     boolean isSlotAvailable = true;
 
                                     // Check if the time slot is already taken
-                                    for (Appointment appointment : am.appointments) {
+                                    for (Appointment appointment : am.appointments)  {
                                         if (appointment != null &&
                                                 appointment.doctorId == selectedDoctor.id &&
                                                 appointment.timeSlot.equalsIgnoreCase(timeSlot)) {
