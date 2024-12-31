@@ -11,9 +11,13 @@ class Appointment {
         this.doctorId = doctorId;
         this.timeSlot = timeSlot;
     }
+    public String toString() {
+        return "Doctor ID:" + doctorId + ", Patient ID:" + patientId + ", timeSlot:" + timeSlot;
+    }
 }
 
 class AppointmentManager {
+    PatientManagement pm = new PatientManagement();
     public Appointment[] appointments;
     public int appointmentCount;
 
@@ -84,16 +88,14 @@ class AppointmentManager {
         }
 
         for (int i = 0; i < appointmentCount; i++) {
-            System.out.println("Patient ID: " + appointments[i].patientId +
-                    ", Doctor ID: " + appointments[i].doctorId +
-                    ", Time Slot: " + appointments[i].timeSlot);
+            System.out.println(", " +appointments[i]);
         }
     }
     public void cancelAppointment(int patientID) {
         boolean appointmentFound = false;
 
         // Load appointments from file
-        loadFromFile();
+      //  loadFromFile();
 
         // Find and cancel the appointment from the array
         for (int i = 0; i < appointmentCount; i++) {
@@ -103,33 +105,51 @@ class AppointmentManager {
                 for (int j = i; j < appointmentCount - 1; j++) {
                     appointments[j] = appointments[j + 1];
                 }
+
                 appointments[--appointmentCount] = null; // Reduce the count
                 System.out.println("Appointment canceled for Patient ID: " + patientID);
+                updatePatientBill(patientID);
                 break;
+            }else {
+                System.out.println("Patient not found in system!");
             }
-        }
 
+        }
         if (!appointmentFound) {
             System.out.println("No appointment found for Patient ID: " + patientID);
-            return;
         }
+    }
+    public void updatePatientBill(int patientId){
+        pm.loadFromFile();
+       Node curr = pm.head;
+        boolean patientFound = false;
+        while (curr != null){
+           if (curr.patientId == patientId){
+               curr.billAmount -= 1000;
+               patientFound = true;
+               break;
+           }
+           curr = curr.next;
+       }
+        if (!patientFound) {
+            System.out.println("Patient with ID " + patientId + " not found.");
+        }
+        if (patientFound){
+            pm.updateFile();
+        }
+       }
 
+    public void updateFile() {
         // Step 3: Rewrite the file with the remaining appointments
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("appointmentData.txt"))) {
             for (int i = 0; i < appointmentCount; i++) {
-                Appointment appointment = appointments[i];
-                if (appointment != null) {
-                    writer.write("Doctor ID: " + appointment.doctorId +
-                            ", Patient ID: " + appointment.patientId +
-                            ", Time Slot: " + appointment.timeSlot);
+                if (appointments[i] != null) {
+                    writer.write(appointments[i].toString());
                     writer.newLine();
                 }
             }
-            System.out.println("Appointment data updated successfully.");
         } catch (IOException e) {
             System.out.println("Error updating appointment data: " + e.getMessage());
         }
     }
-
-
 }

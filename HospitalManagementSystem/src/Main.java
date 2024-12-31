@@ -7,7 +7,7 @@ public class Main {
 
         PatientManagement pm = new PatientManagement();
         doctorManagement dm = new doctorManagement();
-        AppointmentManager am = new AppointmentManager(100);
+        AppointmentManager am = new AppointmentManager(1000);
       //  Billing b = new Billing();
         Staff st = new Staff();
         pm.loadFromFile();
@@ -134,6 +134,7 @@ public class Main {
                                 System.out.print("Enter patient id to delete appointment: ");
                                 searchingPatientId = scanner.nextInt();
                                 am.cancelAppointment(searchingPatientId);
+                                am.updateFile();
                                 break;
                             case 4:
 //

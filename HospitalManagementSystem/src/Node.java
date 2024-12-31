@@ -34,6 +34,9 @@ public class Node { // Static variable to keep track of the ID across instances
     public int getpatientId() {
         return patientId;
     }
+    public void setBillAmount(double billAmount) {
+        this.billAmount=billAmount;
+    }
 
     public String getPatientHealthIssue() {
         return PatientHealthIssue;
@@ -539,6 +542,7 @@ class PatientManagement {
             e.printStackTrace();
         }
     }
+
 
 }
 
