@@ -40,16 +40,12 @@ class AppointmentManager {
             return;
         }
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("appointmentData.txt", true))) {
-            for (int i = 0; i < appointmentCount; i++) {
-                Appointment appointment = appointments[i];
 
-                if (appointment != null) {
                     writer.write("Doctor ID:" + doctorId +
                             ", Patient ID:" + patientId +
                             ", timeSlot:" + timeSlot);
                     writer.newLine();
-                }
-            }
+
             System.out.println("Appointment Data saved successfully.");
         } catch (IOException e) {
             System.out.println("Error saving appointment data: " + e.getMessage());

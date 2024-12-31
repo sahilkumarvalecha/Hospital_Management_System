@@ -11,8 +11,8 @@ public class Staff {
     public void updatePatientInfo(int patientId, String name, int age, String gender, String healthIssue){
         pm.updatePatientInfo(patientId, name, age, gender, healthIssue);
     }
-    public void addNewDoctor(int id, String name, String specialization, String[] availability, int number){
-        dm.addDoctor(id, name, specialization, availability, number);
+    public void addNewDoctor(String name, String specialization, String[] availability, int number){
+        dm.addDoctor(name, specialization, availability, number);
     }
     public void updateDoctorInfo(int id, String name, String specialization, String[] availability ,int number){
         dm.updateDoctor(id, name, specialization, availability, number);

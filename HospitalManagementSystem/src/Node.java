@@ -38,13 +38,6 @@ public class Node { // Static variable to keep track of the ID across instances
     public String getPatientHealthIssue() {
         return PatientHealthIssue;
     }
-    public double getTotalBill() {
-        return billAmount;
-    }
-
-    public double getBillAmount() {
-        return billAmount;
-    }
 
 
     /*  public void bookAppointment(String appointmentDetails){
@@ -84,20 +77,7 @@ public class Node { // Static variable to keep track of the ID across instances
             System.out.println("No patient found with this name " +patientName);
         }
     }
-    public void payBill(double amountPaid){
-        if(amountPaid <=0){
-            System.out.println("Invalid payment amount. please enter a valid amount.");
-            return;
-        }
-        if (amountPaid >= this.billAmount){
-            System.out.println("Bill of " +this.billAmount+ " fully paid by " +PatientName+ ".");
-            this.billAmount = 0.0; //bill is now fully paid
-        }else {
-            this.billAmount -= amountPaid;
-            System.out.println("Partial payment of " +amountPaid+ " from amount " +this.billAmount+ " received from " +PatientName+ ".");
-            System.out.println("Remaining balance is " +this.billAmount);
-        }
-    }
+
 }
 class PatientManagement {
     Node head;

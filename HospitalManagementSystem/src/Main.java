@@ -261,8 +261,6 @@ public class Main {
                             st.updatePatientInfo(id, newName, newAge, newGender, newHealthIssue);
                             break;
                         case 3:
-                            System.out.print("Enter Doctor ID: ");
-                            int ID = scanner.nextInt();
                             System.out.print("Enter Doctor Name: ");
                             String doctorName = scanner.next();
                             scanner.nextLine();
@@ -289,7 +287,7 @@ public class Main {
                                     availability[i] = scanner.next();
                                     scanner.nextLine();
                                 }
-                                st.addNewDoctor(ID, doctorName, specialization, availability, number);
+                                st.addNewDoctor(doctorName, specialization, availability, number);
                                 System.out.println("Doctor added successfully!");
                             }
                             break;

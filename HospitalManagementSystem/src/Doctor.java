@@ -29,6 +29,7 @@ public class Doctor {
 class doctorManagement{
     Doctor[] doctors;
     int count;
+    private int doctorIdCounter = 1;
     String[][] specializationKeywords = {
             // Dermatologist
             {"Dermatologist", "flu", "skin", "rash", "eczema", "acne", "psoriasis", "allergy", "hives", "dermatitis", "itching", "scars", "blemishes"},
@@ -75,8 +76,37 @@ class doctorManagement{
     doctorManagement(){
         doctors = new Doctor[10];
         count = 0;
+        this.doctorIdCounter = doctorIdInitilizer();
     }
-    private boolean isUniqueId(int id){
+
+    public int getDoctorIdCounter() {
+        return doctorIdCounter;
+    }
+
+    private int doctorIdInitilizer() {
+        File myFile = new File("doctorData.txt");
+        int maxId = 0;
+        if (!myFile.exists()) {
+            return 1;
+        }
+        try (Scanner sc = new Scanner(myFile)) {
+            while (sc.hasNextLine()) {
+                String line = sc.nextLine();
+                String[] parts = line.split(",");
+                for (String part : parts) {
+                    if (part.trim().startsWith("Doctor ID:")) {
+                        String idStr = part.split(":")[1].trim();
+                        int id = Integer.parseInt(idStr);
+                        maxId = Math.max(maxId, id); // Keep track of the highest ID
+                    }
+                }
+            }
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        return maxId + 1;
+    }
+   /* private boolean isUniqueId(int id){
         for (Doctor doc : doctors){
             if (doc!= null && doc.id == id){
                 return false; // not unique
@@ -91,7 +121,7 @@ class doctorManagement{
             }
         }
         return true; // number unique
-    }
+    }*/
 
     public  void resize(){
 
@@ -101,20 +131,13 @@ class doctorManagement{
         }
         doctors = temp;
     }
-    public void addDoctor(int id, String name, String specialization, String[] availability, int number){
-        if (!isUniqueId(id)){
-            System.out.println("Error: Doctor with ID " + id + " already exists.");
-            return;
-        }
-        if (!isUniqueNumber(number)) {
-            System.out.println("Error: Doctor with contact number " + number + " already exists.");
-            return;
-        }
+    public void addDoctor(String name, String specialization, String[] availability, int number){
         if (count==doctors.length){
             resize();
         }
-        doctors[count++] = new Doctor(id, name, specialization, availability, number);
+        doctors[count++] = new Doctor(doctorIdCounter, name, specialization, availability, number);
         doctors[count - 1].availability = availability; // Set availability directly
+        doctorIdCounter++;
         saveToFile(doctors,count);
     }
     public void deleteDoctor(int id){
@@ -282,7 +305,7 @@ class doctorManagement{
         }
     }
 
-    public void allocateDoctor(String specialization){
+  /*  public void allocateDoctor(String specialization){
         if (count == 0){
             System.out.println("No doctor available");
             return;
@@ -300,7 +323,7 @@ class doctorManagement{
                 break;
             }
         }
-    }
+    }*/
     public void createFile(){
         File myFile = new File("doctorData.txt");
         try {
@@ -323,7 +346,7 @@ class doctorManagement{
                     writer.write("ID:" + doctor.id + ", Name:" + doctor.doctorName +
                             ", Specialization:" + doctor.specialization +
                             ", Number:" + doctor.Number +
-                            ", Availability:" + String.join(";", doctor.availability));
+                            ", Availability: " + String.join("; ", doctor.availability));
                     writer.newLine();
                 }
             }
