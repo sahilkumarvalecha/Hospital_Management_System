@@ -335,10 +335,6 @@ class doctorManagement{
     }
     public void loadFromFile() {
         File file = new File("doctorData.txt");
-        if (!file.exists()) {
-            System.out.println("No previous doctor data found.");
-            return;
-        }
         try (Scanner sc = new Scanner(file)) {
             while (sc.hasNextLine()) {
                 String line = sc.nextLine();

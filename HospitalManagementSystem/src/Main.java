@@ -8,6 +8,7 @@ public class Main {
         PatientManagement pm = new PatientManagement();
         doctorManagement dm = new doctorManagement();
         AppointmentManager am = new AppointmentManager(20);
+      //  Billing b = new Billing();
         Staff st = new Staff();
         pm.loadFromFile();
         dm.loadFromFile();
@@ -109,7 +110,7 @@ public class Main {
                                         System.out.println("This time slot is already taken. Please choose a different time.");
                                     } else {
                                             am.appointments[am.appointmentCount++] = new Appointment(patientId, selectedDoctor.id, timeSlot);
-                                            pm.getPatientBillAmount(patientId);
+
                                             try {
                                                 am.writeAppointmentsInFile(patientId,selectedDoctor.id,timeSlot);
                                             } catch (IOException e) {
@@ -117,7 +118,10 @@ public class Main {
                                             }
                                             System.out.println("Appointment booked successfully with " + selectedDoctor.doctorName + " at " + timeSlot);
                                     }
+
+                                   // b.updatePatientFile(patientId, curr.PatientName, curr.PatientAge, curr.PatientPhoneNUM, curr.PatientGender, curr.PatientHealthIssue);
                                 }
+
                                 break;
                             case 2:
                                 System.out.print("Enter patient Id to view appointment details: ");
@@ -140,24 +144,7 @@ public class Main {
                                 break;
 
                             case 5:
-                                System.out.print("Enter patient Id to view bill: ");
-                                int searchingpatientId = scanner.nextInt();
 
-                                Node current = pm.head;
-                                boolean found = false;
-
-                                while (current != null) {
-                                    if (current.patientId == searchingpatientId) {
-                                        System.out.println("Your total bill is PKR " + current.getBillAmount());
-                                        found = true;
-                                        break;
-                                    }
-                                    current = current.next;
-                                }
-
-                                if (!found) {
-                                    System.out.println("No patient found with ID: " + searchingpatientId);
-                                }
                                 break;
                             case 6:
                                 System.out.println("Going back to the main menu...");

@@ -10,7 +10,7 @@ public class Node { // Static variable to keep track of the ID across instances
     String PatientGender;
     String PatientHealthIssue;
     String appointmentDetails;
-    double billAmount;
+    double  billAmount;
     String diagnosis;
     String prescription;
     Node next;
@@ -37,31 +37,35 @@ public class Node { // Static variable to keep track of the ID across instances
     public String getPatientHealthIssue() {
         return PatientHealthIssue;
     }
+    public double getTotalBill() {
+        return billAmount;
+    }
 
     public double getBillAmount() {
         return billAmount;
     }
 
-    public void bookAppointment(String appointmentDetails){
-        this.appointmentDetails = appointmentDetails;
-        System.out.println("Appointment booked for " +PatientName+ " on " +appointmentDetails);
-        billAmount  += 1000;
-    }
-    public void viewAppointment(){
-        if (this.appointmentDetails == null){
-            System.out.println("No appointments scheduled for patient name: " +PatientName);
-        }else{
-            System.out.println("Appointment Details for " +PatientName+ " : " +appointmentDetails);
+
+    /*  public void bookAppointment(String appointmentDetails){
+            this.appointmentDetails = appointmentDetails;
+            System.out.println("Appointment booked for " +PatientName+ " on " +appointmentDetails);
+            billAmount  += 1000;
         }
-    }
-    public void cancelAppointment(){
-        if (this.appointmentDetails == null){
-            System.out.println("No appointment to cancel for : " +PatientName);
-        }else {
-            System.out.println("Appointments for " +PatientName+ " on " +appointmentDetails+ " has been cancelled.");
-            appointmentDetails = null;
+        public void viewAppointment(){
+            if (this.appointmentDetails == null){
+                System.out.println("No appointments scheduled for patient name: " +PatientName);
+            }else{
+                System.out.println("Appointment Details for " +PatientName+ " : " +appointmentDetails);
+            }
         }
-    }
+        public void cancelAppointment(){
+            if (this.appointmentDetails == null){
+                System.out.println("No appointment to cancel for : " +PatientName);
+            }else {
+                System.out.println("Appointments for " +PatientName+ " on " +appointmentDetails+ " has been cancelled.");
+                appointmentDetails = null;
+            }
+        }*/
     public void setDiagnosis(String diagnosis) {
 
         this.diagnosis = diagnosis;
@@ -97,12 +101,14 @@ public class Node { // Static variable to keep track of the ID across instances
 class PatientManagement {
     Node head;
     Node last;
+    double billAmount;
     private int patientIdCounter = 1;
 
     public PatientManagement() {
         this.head = null;
         this.last = null;
         this.patientIdCounter = patientIdInitilizer();
+        this.billAmount = 0;
     }
 
     public int getPatientIdCounter() {
@@ -171,12 +177,15 @@ class PatientManagement {
     public void writeInFile(Node patient) {
         try {
             FileWriter fileWriter = new FileWriter("patientData.txt", true);
-            fileWriter.write("Patient ID: " + patient.patientId + " , ");
-            fileWriter.write("Patient name: " + patient.PatientName + " , ");
-            fileWriter.write("Patient age: " + patient.PatientAge + " , ");
-            fileWriter.write("Patient phone number: " + patient.PatientPhoneNUM + " , ");
-            fileWriter.write("Patient Gender: " + patient.PatientGender + " , ");
-            fileWriter.write("Patient health issue: " + patient.PatientHealthIssue);
+
+            fileWriter.write("Patient ID: " +patient.patientId+ " , ");
+            fileWriter.write("Patient name: " +patient.PatientName+ " , ");
+            fileWriter.write("Patient age: " +patient.PatientAge+ " , ");
+            fileWriter.write("Patient phone number: " +patient.PatientPhoneNUM+ " , ");
+            fileWriter.write("Patient Gender: " +patient.PatientGender+ " , ");
+            fileWriter.write("Patient health issue: " +patient.PatientHealthIssue+ " , ");
+            fileWriter.write("Patient Bill : " +patient.billAmount);
+
             fileWriter.write("\n");
 
             fileWriter.close();
@@ -199,6 +208,9 @@ class PatientManagement {
             System.out.println("File not found");
             e.printStackTrace();
         }
+    }
+    public void addBill(double amount){
+        billAmount += amount;
     }
 
     public Node SearchPatient(int patientId) {
@@ -235,6 +247,10 @@ class PatientManagement {
         return null;
     }
 
+  /*  public void bookAppointment(int patientId, String appointmentDetails){
+=======
+>>>>>>> Stashed changes
+
     public void getPatientBillAmount(int Id) {
         if (isEmpty()) {
             System.out.println("The list is empty. Patient not found.");
@@ -257,6 +273,7 @@ class PatientManagement {
 
 
     public void bookAppointment(int patientId, String appointmentDetails){
+>>>>>>> 224688f32385563b21866c7afd96512baf6e4b8e
         Node curr = head;
         while (curr != null){
             if (curr.patientId == patientId){
@@ -266,8 +283,8 @@ class PatientManagement {
             curr = curr.next;
         }
         System.out.println("No patient found with name: " + patientId);
-    }
-    public void viewAppointments(String name){
+    }*/
+ /*   public void viewAppointments(String name){
         Node curr = head;
         while (curr != null){
             if (curr.PatientName.equalsIgnoreCase(name)){
@@ -286,7 +303,7 @@ class PatientManagement {
             curr = curr.next;
         }
         System.out.println("No patient found with name: " +patientName);
-    }
+    }*/
     public void updatePatientInfo(int patientId, String name, int age, String gender, String healthIssue){
         Node curr = head;
         while (curr!=null ){
