@@ -56,30 +56,6 @@ class AppointmentManager {
             e.printStackTrace();
         }
     }
-    public void loadFromFile() {
-        File file = new File("appointmentData.txt");
-        PatientManagement pm = new PatientManagement();
-        if (!file.exists()) {
-            System.out.println("No previous appointment data found.");
-            return;
-        }
-        try (Scanner sc = new Scanner(file)) {
-            while (sc.hasNextLine()) {
-                String line = sc.nextLine();
-                System.out.println("Reading line: " + line); // Debug log
-                String[] fields = line.split(", ");
-                int doctorId = Integer.parseInt(fields[0].split(":")[1].trim());
-                int patientId = Integer.parseInt(fields[1].split(":")[1].trim());
-                String timeSlot = fields[2].split(":")[1].trim();
-
-                appointments[appointmentCount++] = new Appointment(patientId, doctorId, timeSlot);
-             //   pm.getPatientBillAmount(patientId);
-            }
-        } catch (IOException | NumberFormatException e) {
-            System.out.println("Error loading appointment data: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
 
     public void displayAppointments() {
         if (appointmentCount == 0) {
@@ -173,6 +149,14 @@ class AppointmentManager {
         deleteAppointment(patientId);
         updateFile();
     }
+    public  void resize(){
+
+        Appointment[] temp = new Appointment[appointments.length+10];
+        for (int i=0; i<appointments.length; i++){
+            temp[i] = appointments[i];
+        }
+        appointments = temp;
+    }
     private void deleteAppointment(int patientId) {
         boolean appointmentFound = false;
 
@@ -228,6 +212,61 @@ class AppointmentManager {
             }
         } catch (IOException e) {
             System.out.println("Error updating appointment data: " + e.getMessage());
+        }
+    }
+    public void loadFromFile() {
+        try {
+            File f = new File("appointmentData.txt");
+            if (!f.exists()) {
+                f.createNewFile();
+            } else {
+                FileReader fr = new FileReader(f);
+                BufferedReader s = new BufferedReader(fr);
+
+                String line;
+                while ((line = s.readLine()) != null) {
+                    // Split line by commas and trim excess spaces
+                    String[] appointmentData = line.split(",");
+
+                    if (appointmentData.length < 3) {
+                        System.out.println("Invalid appointment data format.");
+                        continue;  // Skip invalid data
+                    }
+
+                    // Parse Doctor ID (manual validation)
+                    int doctorId = 0;
+                    String[] doctorIdParts = appointmentData[0].split(":");
+                    if (doctorIdParts.length > 1) {
+                        String doctorIdString = doctorIdParts[1].trim();
+                        for (int i = 0; i < doctorIdString.length(); i++) {
+                            doctorId = doctorId * 10 + (doctorIdString.charAt(i) - '0');
+                        }
+                    }
+
+                    // Parse Patient ID (manual validation)
+                    int patientId = 0;
+                    String[] patientIdParts = appointmentData[1].split(":");
+                    if (patientIdParts.length > 1) {
+                        String patientIdString = patientIdParts[1].trim();
+                        for (int i = 0; i < patientIdString.length(); i++) {
+                            patientId = patientId * 10 + (patientIdString.charAt(i) - '0');
+                        }
+                    }
+
+                    // Parse Time Slot
+                    String timeSlot = appointmentData[2].split(":")[1].trim();
+
+                    // Create a new Appointment object and add to the array
+                    if (appointmentCount < appointments.length) {
+                        appointments[appointmentCount++] = new Appointment(patientId, doctorId, timeSlot);
+                    } else {
+                        System.out.println("Appointment list is full! Cannot add more appointments.");
+                    }
+                }
+                s.close();
+            }
+        } catch (IOException e) {
+            System.out.println("Error reading appointment data: " + e.getMessage());
         }
     }
 }
