@@ -185,8 +185,9 @@ class PatientManagement {
         }
         updateFile();
     }
-    public void updateFile(){
+    public void updateFile() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("patientData.txt"))) {
+            loadFromFile();
             Node current = head;
             while (current != null) {
                 writer.write("Patient ID: " + current.patientId + " , ");
@@ -195,8 +196,7 @@ class PatientManagement {
                 writer.write("Patient phone number: " + current.PatientPhoneNUM + " , ");
                 writer.write("Patient Gender: " + current.PatientGender + " , ");
                 writer.write("Patient health issue: " + current.PatientHealthIssue + " , ");
-                writer.write("Patient Bill : " + current.billAmount+ " , ");
-                writer.write("Prescription: " + (current.prescription != null ? current.prescription : "None"));
+                writer.write("Patient Bill : " + current.billAmount);
                 writer.newLine();
                 current = current.next;
             }
@@ -487,29 +487,88 @@ class PatientManagement {
         }
     }
     public void loadFromFile() {
-        File file = new File("patientData.txt");
-        if (!file.exists()) {
-            System.out.println("No previous patient data found.");
-            return;
-        }
+        try {
+            File file = new File("patientData.txt");
 
-        try (Scanner sc = new Scanner(file)) {
-            while (sc.hasNextLine()) {
-                String line = sc.nextLine();
-                String[] data = line.split(",");
-                int id = Integer.parseInt(data[0].split(":")[1].trim());
-                String name = data[1].split(":")[1].trim();
-                int age = Integer.parseInt(data[2].split(":")[1].trim());
-                String phone = data[3].split(":")[1].trim();
-                String gender = data[4].split(":")[1].trim();
-                String healthIssue = data[5].split(":")[1].trim();
-                double billAmount = Double.parseDouble(data[6].split(":")[1].trim());
-                String prescription = data[7].split(":")[1].trim();
+            if (!file.exists()) {
+                System.out.println("No previous patient data found.");
+                return;
+            }
 
-                // Create a new node
-                Node newNode = new Node(id, name, age, phone, gender, healthIssue);
+            FileReader fr = new FileReader(file);
+            BufferedReader br = new BufferedReader(fr);
+            String line;
+
+            while ((line = br.readLine()) != null) {
+                // Manually extracting the data by looking for the position of ':'
+                int startIndex, endIndex;
+                String id = "", name = "", age = "", phone = "", gender = "", healthIssue = "", bill = "";
+
+                // Extract patient ID
+                startIndex = line.indexOf(":") + 1;
+                endIndex = line.indexOf(",", startIndex);
+                id = line.substring(startIndex, endIndex).trim();
+
+                // Extract Name
+                startIndex = line.indexOf(":", endIndex) + 1;
+                endIndex = line.indexOf(",", startIndex);
+                name = line.substring(startIndex, endIndex).trim();
+
+                // Extract Age
+                startIndex = line.indexOf(":", endIndex) + 1;
+                endIndex = line.indexOf(",", startIndex);
+                age = line.substring(startIndex, endIndex).trim();
+
+                // Extract Phone
+                startIndex = line.indexOf(":", endIndex) + 1;
+                endIndex = line.indexOf(",", startIndex);
+                phone = line.substring(startIndex, endIndex).trim();
+
+                // Extract Gender
+                startIndex = line.indexOf(":", endIndex) + 1;
+                endIndex = line.indexOf(",", startIndex);
+                gender = line.substring(startIndex, endIndex).trim();
+
+                // Extract Health Issue
+                startIndex = line.indexOf(":", endIndex) + 1;
+                endIndex = line.indexOf(",", startIndex);
+                healthIssue = line.substring(startIndex, endIndex).trim();
+
+                // Extract Bill Amount (Last value after last comma)
+                startIndex = line.lastIndexOf(":") + 1;
+                bill = line.substring(startIndex).trim();
+
+                // Manually converting strings to integers and double
+                int patientId = 0;
+                for (int i = 0; i < id.length(); i++) {
+                    patientId = patientId * 10 + (id.charAt(i) - '0');
+                }
+
+                int patientAge = 0;
+                for (int i = 0; i < age.length(); i++) {
+                    patientAge = patientAge * 10 + (age.charAt(i) - '0');
+                }
+
+                double billAmount = 0;
+                boolean isDecimal = false;
+                double decimalFactor = 0.1;
+                for (int i = 0; i < bill.length(); i++) {
+                    char c = bill.charAt(i);
+                    if (c == '.') {
+                        isDecimal = true;
+                    } else {
+                        if (isDecimal) {
+                            billAmount += (c - '0') * decimalFactor;
+                            decimalFactor /= 10;
+                        } else {
+                            billAmount = billAmount * 10 + (c - '0');
+                        }
+                    }
+                }
+
+                // Create a new patient node and add it to the list
+                Node newNode = new Node(patientId, name, patientAge, phone, gender, healthIssue);
                 newNode.billAmount = billAmount;
-                newNode.prescription = prescription;
 
                 if (isEmpty()) {
                     head = newNode;
@@ -518,11 +577,9 @@ class PatientManagement {
                     last.next = newNode;
                     last = newNode;
                 }
-
-                // Update the patientIdCounter
-                patientIdCounter = Math.max(patientIdCounter, id + 1);
             }
-        } catch (Exception e) {
+            br.close();
+        } catch (IOException e) {
             System.out.println("Error reading from file: " + e.getMessage());
             e.printStackTrace();
         }

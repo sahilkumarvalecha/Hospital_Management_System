@@ -42,6 +42,7 @@ class doctorManagement{
     Doctor[] doctors;
     int count;
     private int doctorIdCounter = 1;
+    int maxId;
     String[][] specializationKeywords = {
             // Dermatologist
             {"Dermatologist", "flu", "skin", "rash", "eczema", "acne", "psoriasis", "allergy", "hives", "dermatitis", "itching", "scars", "blemishes"},
@@ -88,6 +89,7 @@ class doctorManagement{
     doctorManagement(){
         doctors = new Doctor[10];
         count = 0;
+        maxId = 0;
         this.doctorIdCounter = doctorIdInitilizer();
     }
 
@@ -97,27 +99,28 @@ class doctorManagement{
 
     private int doctorIdInitilizer() {
         File myFile = new File("doctorData.txt");
-        int maxId = 0;
         if (!myFile.exists()) {
-            return 1;
+            return 1; // Start from 1 if file doesn't exist
         }
         try (Scanner sc = new Scanner(myFile)) {
             while (sc.hasNextLine()) {
                 String line = sc.nextLine();
                 String[] parts = line.split(",");
                 for (String part : parts) {
-                    if (part.trim().startsWith("Doctor ID:")) {
+                    if (part.trim().startsWith("ID:")) {
                         String idStr = part.split(":")[1].trim();
                         int id = Integer.parseInt(idStr);
-                        maxId = Math.max(maxId, id); // Keep track of the highest ID
+                        maxId = Math.max(maxId, id); // Track highest ID
                     }
                 }
             }
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
-        return maxId + 1;
+        loadFromFile();
+        return maxId + 1; // Increment the last ID
     }
+
    /* private boolean isUniqueId(int id){
         for (Doctor doc : doctors){
             if (doc!= null && doc.id == id){
@@ -143,14 +146,13 @@ class doctorManagement{
         }
         doctors = temp;
     }
-    public void addDoctor(String name, String specialization, String[] availability, int number){
-        if (count==doctors.length){
+    public void addDoctor(String name, String specialization, String[] availability, int number) {
+        if (count == doctors.length) {
             resize();
         }
         doctors[count++] = new Doctor(doctorIdCounter, name, specialization, availability, number);
-        doctors[count - 1].availability = availability; // Set availability directly
-        doctorIdCounter++;
-        saveToFile(doctors,count);
+
+        saveToFile();
     }
     public void deleteDoctor(int id){
         for (int i=0; i< count; i++){
@@ -165,33 +167,20 @@ class doctorManagement{
             }
         }
         System.out.println("Doctor not found");
-        saveToFile(doctors,count);
+        saveToFile();
     }
     public void updateDoctor(int id, String name, String specialization, String[] availability ,int number){
-        loadFromFile();
         for (Doctor doctor:doctors){
             if (doctor != null && doctor.id == id){
                 doctor.doctorName = name;
                 doctor.specialization = specialization;
                 doctor.availability = availability;
                 doctor.Number = number;
-                updateFile();
-                return;
-            }
-
-        }
-
-        System.out.println("Doctor with ID " +id+ " not found ");
-    }
-    public void updateDoctorSchedule(int id, String[] availability){
-        loadFromFile();
-        for (Doctor doctor:doctors){
-            if (doctor != null && doctor.id == id){
-                doctor.availability = availability;
                 System.out.println("Doctor updated successfully!");
-                updateFile();
+                saveToFile();
                 return;
             }
+
             System.out.println("Doctor with ID " +id+ " not found ");
         }
     }
@@ -213,8 +202,10 @@ class doctorManagement{
         return null; // No match found
     }
     public void displayDoctorAccToHealthIssue(String healthIssue) {
-        String docAccToIssue = findSpecialization(specializationKeywords,healthIssue);
-        if(docAccToIssue == null){
+        // Find the specialization based on the health issue
+        String docAccToIssue = findSpecialization(specializationKeywords, healthIssue);
+
+        if (docAccToIssue == null) {
             System.out.println("No Doctors Available To Treat This Issue");
             return;
         }
@@ -222,30 +213,37 @@ class doctorManagement{
             System.out.println("No Doctors are available");
             return;
         }
-        int k =1;
-        boolean doctorFound = false;// Track if any doctor is found
-        System.out.println("Below Doctor Is Available For Appointment: ");
-        for (Doctor doctor : doctors) {
-            if (doctor != null && doctor.specialization.trim().equalsIgnoreCase(docAccToIssue.trim())){
+
+        // Track doctors already displayed to avoid duplicates
+        boolean[] displayed = new boolean[count];
+        boolean doctorFound = false; // To track if any doctor is found
+        int k = 1; // Display numbering
+
+        System.out.println("Below Doctor(s) Are Available For Appointment: ");
+        for (int i = 0; i < count; i++) {
+            Doctor doctor = doctors[i];
+            if (doctor != null && doctor.specialization.trim().equalsIgnoreCase(docAccToIssue.trim()) && !displayed[i]) {
                 doctorFound = true;
-                System.out.print(k +") Doctor name: " + doctor.doctorName +
+                displayed[i] = true; // Mark this doctor as displayed
+                System.out.println(k + ") Doctor name: " + doctor.doctorName +
                         ", Doctor specialization: " + doctor.specialization +
-                        ", Doctor number: " + doctor.Number );
+                        ", Doctor number: " + doctor.Number);
                 k++;
-                System.out.println();
             }
         }
-        if(!doctorFound){
-            System.out.println("No doctor found to treat " + healthIssue);
 
+        if (!doctorFound) {
+            System.out.println("No doctor found to treat " + healthIssue);
         }
     }
+
+
     public Doctor searchDoctorById(int Id) {
         if (count == 0) {
             return null;
         }
         boolean doctorFound = false;  // Track if any doctor is found
-                for (Doctor doctor : doctors) {
+        for (Doctor doctor : doctors) {
             if (doctor.id == Id){
                 return doctor;
             }
@@ -332,25 +330,25 @@ class doctorManagement{
         }
     }
 
-  /*  public void allocateDoctor(String specialization){
-        if (count == 0){
-            System.out.println("No doctor available");
-            return;
-        }
-        for (Doctor doctor : doctors){
-            if (doctor.specialization.equalsIgnoreCase(specialization)){
-                System.out.print(" Assigned Doctor: \n" + " " +
-                        " Doctor name: " +doctor.doctorName+
-                        ", Doctor specialization: " +doctor.specialization+
-                        ", Doctor number: " +doctor.Number+
-                        ", Doctor availability timing: " );
-                for (int i=0; i<doctor.availability.length; i++){
-                    System.out.print(" " +doctor.availability[i]);
-                }
-                break;
-            }
-        }
-    }*/
+    /*  public void allocateDoctor(String specialization){
+          if (count == 0){
+              System.out.println("No doctor available");
+              return;
+          }
+          for (Doctor doctor : doctors){
+              if (doctor.specialization.equalsIgnoreCase(specialization)){
+                  System.out.print(" Assigned Doctor: \n" + " " +
+                          " Doctor name: " +doctor.doctorName+
+                          ", Doctor specialization: " +doctor.specialization+
+                          ", Doctor number: " +doctor.Number+
+                          ", Doctor availability timing: " );
+                  for (int i=0; i<doctor.availability.length; i++){
+                      System.out.print(" " +doctor.availability[i]);
+                  }
+                  break;
+              }
+          }
+      }*/
     public void createFile(){
         File myFile = new File("doctorData.txt");
         try {
@@ -365,7 +363,7 @@ class doctorManagement{
         }
     }
     // Save all doctor details to a file
-    public static void saveToFile(Doctor[] doctors, int count) {
+    public void saveToFile() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("doctorData.txt"))) {
             for (int i = 0; i < count; i++) {
                 Doctor doctor = doctors[i];
@@ -373,14 +371,13 @@ class doctorManagement{
                     writer.write("ID:" + doctor.id + ", Name:" + doctor.doctorName +
                             ", Specialization:" + doctor.specialization +
                             ", Number:" + doctor.Number +
-                            ", Availability: " + String.join("; ", doctor.availability));
+                            ", Availability:" + String.join(",", doctor.availability));
                     writer.newLine();
                 }
             }
             System.out.println("Doctor data saved successfully.");
         } catch (IOException e) {
             System.out.println("Error saving doctor data: " + e.getMessage());
-            e.printStackTrace();
         }
     }
     public void updateFile() {
@@ -397,27 +394,62 @@ class doctorManagement{
         }
     }
     public void loadFromFile() {
-        File file = new File("doctorData.txt");
-        try (Scanner sc = new Scanner(file)) {
-            while (sc.hasNextLine()) {
-                String line = sc.nextLine();
-                String[] fields = line.split(", ");
-                int id = Integer.parseInt(fields[0].split(":")[1].trim());
-                String name = fields[1].split(":")[1].trim();
-                String specialization = fields[2].split(":")[1].trim();
-                int number = Integer.parseInt(fields[3].split(":")[1].trim());
-                String[] availability = fields[4].split(":")[1].trim().split(";");
+        try {
+            File f = new File("doctorData.txt");
+            if (!f.exists()) {
+                f.createNewFile();
+            } else {
+                FileReader fr = new FileReader(f);
+                BufferedReader s = new BufferedReader(fr);
 
-                // Add the doctor directly to the array
-                if (count == doctors.length) {
-                    resize();
+                String line;
+                while ((line = s.readLine()) != null) {
+                    // Split line by commas and trim excess spaces
+                    String[] doctorData = line.split(",");
+
+                    if (doctorData.length < 5) {
+                        System.out.println("Invalid doctor data format.");
+                        continue;  // Skip invalid data
+                    }
+
+                    // Parse ID (with manual validation)
+                    int id = 0;
+                    String[] idParts = doctorData[0].split(":");
+                    if (idParts.length > 1) {
+                        String idString = idParts[1].trim();
+                        for (int i = 0; i < idString.length(); i++) {
+                            id = id * 10 + (idString.charAt(i) - '0');
+                        }
+                    }
+
+                    // Parse Name (considering spaces in the name)
+                    String name = doctorData[1].split(":")[1].trim();
+
+                    // Parse Specialization
+                    String specialization = doctorData[2].split(":")[1].trim();
+
+                    // Parse Number (with manual validation)
+                    int number = 0;
+                    String[] numberParts = doctorData[3].split(":");
+                    if (numberParts.length > 1) {
+                        String numberString = numberParts[1].trim();
+                        for (int i = 0; i < numberString.length(); i++) {
+                            number = number * 10 + (numberString.charAt(i) - '0');
+                        }
+                    }
+                    // Parse Availability
+                    String[] availability = doctorData[4].split(":")[1].trim().split(";");
+
+                    // Create a new Doctor object and add to the array
+                    if (count == doctors.length) {
+                        resize();
+                    }
+                    doctors[count++] = new Doctor(id, name, specialization, availability, number);
                 }
-                doctors[count++] = new Doctor(id, name, specialization, availability, number);
+                s.close();
             }
-        } catch (IOException | NumberFormatException e) {
-            System.out.println("Error loading doctor data: " + e.getMessage());
+        } catch (IOException e) {
+            System.out.println("Error reading doctor data: " + e.getMessage());
         }
     }
-
-
 }
