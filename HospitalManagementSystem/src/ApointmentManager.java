@@ -119,6 +119,84 @@ class AppointmentManager {
             System.out.println("No appointment found for Patient ID: " + patientID);
         }
     }
+    public void searchAppointmentByDoctorId(int docID) {
+        boolean appointmentFound = false;
+
+        if (appointmentCount == 0) {
+            System.out.println("No appointments available.");
+            return;
+        }
+
+        System.out.println("Appointments for Doctor ID: " + docID);
+        for (int i = 0; i < appointmentCount; i++) {
+            if (appointments[i] != null && appointments[i].doctorId == docID) {
+                System.out.println(appointments[i]);
+                appointmentFound = true;
+            }
+        }
+
+        if (!appointmentFound) {
+            System.out.println("No appointments found for Doctor ID: " + docID);
+        }
+    }
+    public Appointment searchAppointmentByDocId(int docID) {
+        boolean appointmentFound = false;
+
+        if (appointmentCount == 0) {
+            System.out.println("No appointments available.");
+            return null;
+        }
+        for (int i = 0; i < appointmentCount; i++) {
+            if (appointments[i] != null && appointments[i].doctorId == docID) {
+                appointmentFound = true;
+                return appointments[i];
+            }
+        }
+
+        if (!appointmentFound) {
+            System.out.println("No appointments found for Doctor ID: " + docID);
+            return null;
+        }
+        return null;
+    }
+    public void writePrescription(int patientId, int doctorId, String prescription) {
+        pm.loadFromFile();
+        Node patient = pm.SearchPatient(patientId);
+
+        if (patient == null) {
+            System.out.println("Patient with ID " + patientId + " not found.");
+            return;
+        }
+        patient.setPrescription(prescription);
+
+        pm.updateFile();
+        deleteAppointment(patientId);
+        updateFile();
+    }
+    private void deleteAppointment(int patientId) {
+        boolean appointmentFound = false;
+
+        for (int i = 0; i < appointmentCount; i++) {
+            if (appointments[i] != null && appointments[i].patientId == patientId) {
+                appointmentFound = true;
+
+                // Shift the array to remove the canceled appointment
+                for (int j = i; j < appointmentCount - 1; j++) {
+                    appointments[j] = appointments[j + 1];
+                }
+                appointments[--appointmentCount] = null;
+                System.out.println("Appointment deleted for Patient ID: " + patientId);
+                break;
+            }
+        }
+
+        if (!appointmentFound) {
+            System.out.println("No appointment found for Patient ID: " + patientId);
+        } else {
+            // Update the appointments file
+            updateFile();
+        }
+    }
     public void updatePatientBill(int patientId){
         pm.loadFromFile();
        Node curr = pm.head;

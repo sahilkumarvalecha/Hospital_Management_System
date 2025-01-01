@@ -42,27 +42,6 @@ public class Node { // Static variable to keep track of the ID across instances
         return PatientHealthIssue;
     }
 
-
-    /*  public void bookAppointment(String appointmentDetails){
-            this.appointmentDetails = appointmentDetails;
-            System.out.println("Appointment booked for " +PatientName+ " on " +appointmentDetails);
-            billAmount  += 1000;
-        }
-        public void viewAppointment(){
-            if (this.appointmentDetails == null){
-                System.out.println("No appointments scheduled for patient name: " +PatientName);
-            }else{
-                System.out.println("Appointment Details for " +PatientName+ " : " +appointmentDetails);
-            }
-        }
-        public void cancelAppointment(){
-            if (this.appointmentDetails == null){
-                System.out.println("No appointment to cancel for : " +PatientName);
-            }else {
-                System.out.println("Appointments for " +PatientName+ " on " +appointmentDetails+ " has been cancelled.");
-                appointmentDetails = null;
-            }
-        }*/
     public void setDiagnosis(String diagnosis) {
 
         this.diagnosis = diagnosis;
@@ -86,6 +65,7 @@ class PatientManagement {
     Node head;
     Node last;
     double billAmount;
+    String prescription;
     private int patientIdCounter = 1;
 
     public PatientManagement() {
@@ -93,6 +73,7 @@ class PatientManagement {
         this.last = null;
         this.patientIdCounter = patientIdInitilizer();
         this.billAmount = 0;
+        this.prescription = null;
     }
 
     public int getPatientIdCounter() {
@@ -168,10 +149,10 @@ class PatientManagement {
             fileWriter.write("Patient phone number: " +patient.PatientPhoneNUM+ " , ");
             fileWriter.write("Patient Gender: " +patient.PatientGender+ " , ");
             fileWriter.write("Patient health issue: " +patient.PatientHealthIssue+ " , ");
-            fileWriter.write("Patient Bill : " +patient.billAmount);
+            fileWriter.write("Patient Bill : " +patient.billAmount+ " , ");
+            fileWriter.write("Prescription: " + patient.prescription);
 
             fileWriter.write("\n");
-
             fileWriter.close();
 
         } catch (IOException e) {
@@ -214,7 +195,8 @@ class PatientManagement {
                 writer.write("Patient phone number: " + current.PatientPhoneNUM + " , ");
                 writer.write("Patient Gender: " + current.PatientGender + " , ");
                 writer.write("Patient health issue: " + current.PatientHealthIssue + " , ");
-                writer.write("Patient Bill : " + current.billAmount);
+                writer.write("Patient Bill : " + current.billAmount+ " , ");
+                writer.write("Prescription: " + (current.prescription != null ? current.prescription : "None"));
                 writer.newLine();
                 current = current.next;
             }
@@ -497,8 +479,8 @@ class PatientManagement {
             System.out.print(", Patient Phone Number: " + current.PatientPhoneNUM);
             System.out.print(", Patient Gender: " + current.PatientGender);
             System.out.print(", Patient Health Issue: " + current.PatientHealthIssue);
-            System.out.print(", Appointment Details: " + current.appointmentDetails);
             System.out.print(", Bill Amount: " + current.billAmount);
+            System.out.print(", Appointment Details: " + current.appointmentDetails);
             System.out.println(" ");
 
             current = current.next;  // Move to the next node
@@ -521,11 +503,14 @@ class PatientManagement {
                 String phone = data[3].split(":")[1].trim();
                 String gender = data[4].split(":")[1].trim();
                 String healthIssue = data[5].split(":")[1].trim();
-                double billAmount = Double.parseDouble(data[6].split(":")[1]);
+                double billAmount = Double.parseDouble(data[6].split(":")[1].trim());
+                String prescription = data[7].split(":")[1].trim();
 
-                // Create a new node without writing back to the file
+                // Create a new node
                 Node newNode = new Node(id, name, age, phone, gender, healthIssue);
                 newNode.billAmount = billAmount;
+                newNode.prescription = prescription;
+
                 if (isEmpty()) {
                     head = newNode;
                     last = newNode;
@@ -542,7 +527,6 @@ class PatientManagement {
             e.printStackTrace();
         }
     }
-
 
 }
 

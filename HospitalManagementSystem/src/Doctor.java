@@ -1,5 +1,6 @@
 
 import java.io.*;
+import java.util.Arrays;
 import java.util.Scanner;
 
 
@@ -24,6 +25,17 @@ public class Doctor {
     public void setPrescription(Node patient, String prescription){
         patient.setPrescription(prescription);
         System.out.println("Doctor " +doctorName+ " set prescription for " +patient.PatientName + " : " +prescription);
+    }
+
+    @Override
+    public String toString() {
+        return "Doctor{" +
+                "id=" + id +
+                ", doctorName='" + doctorName + '\'' +
+                ", specialization='" + specialization + '\'' +
+                ", availability=" + Arrays.toString(availability) +
+                ", Number=" + Number +
+                '}';
     }
 }
 class doctorManagement{
@@ -156,13 +168,28 @@ class doctorManagement{
         saveToFile(doctors,count);
     }
     public void updateDoctor(int id, String name, String specialization, String[] availability ,int number){
+        loadFromFile();
         for (Doctor doctor:doctors){
             if (doctor != null && doctor.id == id){
                 doctor.doctorName = name;
                 doctor.specialization = specialization;
                 doctor.availability = availability;
                 doctor.Number = number;
+                updateFile();
+                return;
+            }
+
+        }
+
+        System.out.println("Doctor with ID " +id+ " not found ");
+    }
+    public void updateDoctorSchedule(int id, String[] availability){
+        loadFromFile();
+        for (Doctor doctor:doctors){
+            if (doctor != null && doctor.id == id){
+                doctor.availability = availability;
                 System.out.println("Doctor updated successfully!");
+                updateFile();
                 return;
             }
             System.out.println("Doctor with ID " +id+ " not found ");
@@ -213,17 +240,17 @@ class doctorManagement{
 
         }
     }
-    public String searchDoctorById(int Id) {
+    public Doctor searchDoctorById(int Id) {
         if (count == 0) {
-            return "No Doctors are available";
+            return null;
         }
         boolean doctorFound = false;  // Track if any doctor is found
                 for (Doctor doctor : doctors) {
             if (doctor.id == Id){
-                return doctor.doctorName;
+                return doctor;
             }
         }
-        return "No doctor found with Id " + Id;
+        return null;
     }
     public void searchDoctorBySpecialization(String specialization) {
         if (count == 0) {
@@ -354,6 +381,19 @@ class doctorManagement{
         } catch (IOException e) {
             System.out.println("Error saving doctor data: " + e.getMessage());
             e.printStackTrace();
+        }
+    }
+    public void updateFile() {
+        // Step 3: Rewrite the file with the remaining appointments
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("appointmentData.txt"))) {
+            for (int i = 0; i < doctorIdCounter; i++) {
+                if (doctors[i] != null) {
+                    writer.write(doctors[i].toString());
+                    writer.newLine();
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error updating appointment data: " + e.getMessage());
         }
     }
     public void loadFromFile() {
