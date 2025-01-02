@@ -151,7 +151,6 @@ public class Main {
                                                         break;
                                                     }
                                                 }
-
                                                 break;
                                             case 3:
                                                 System.out.print("Enter patient id to delete appointment: ");
@@ -162,8 +161,12 @@ public class Main {
                                                 System.out.print("Enter patient id to View Prescription: ");
                                                 searchingPatientId = scanner.nextInt();
                                                 Node current = pm.SearchPatient(searchingPatientId);
-                                                System.out.println("Patient Name: " + current.PatientName +
-                                                        "\n Prescription: "+ current.prescription);
+                                                if (current != null) {
+                                                    System.out.println("Patient Name: " + current.PatientName +
+                                                            "\nPrescription: " + current.prescription);
+                                                } else {
+                                                    System.out.println("No patient found with the given ID.");
+                                                }
                                                 break;
                                             case 5:
                                                 System.out.print("Enter patient id to pay Bill: ");
@@ -213,10 +216,14 @@ public class Main {
                                             case 1:
                                                 System.out.println("Enter Your Id To View Schedule");
                                                 int searchingdocID = scanner.nextInt();
-                                                dm.searchDoctorById(searchingdocID);
-                                                System.out.println("Your Schedule Is: ");
-                                                for(int i=0; i<dm.searchDoctorById(searchingdocID).availability.length;i++){
-                                                    System.out.println(" "+dm.searchDoctorById(searchingdocID).availability[i]);
+                                                Doctor doctor = dm.searchDoctorById(searchingdocID); // Store the result in a variable
+                                                if(doctor != null) {
+                                                    System.out.println("Your Schedule Is: ");
+                                                    for (int i = 0; i < dm.searchDoctorById(searchingdocID).availability.length; i++) {
+                                                        System.out.println(" " + dm.searchDoctorById(searchingdocID).availability[i]);
+                                                    }
+                                                }else {
+                                                    System.out.println("System Error! ");
                                                 }
                                                 break;
                                             case 2:

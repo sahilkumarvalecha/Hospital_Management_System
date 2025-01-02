@@ -1,4 +1,3 @@
-import javax.swing.plaf.IconUIResource;
 import java.io.*;
 import java.util.Scanner;
 
@@ -199,8 +198,8 @@ class PatientManagement {
                 writer.write("Patient phone number: " + current.PatientPhoneNUM + " , ");
                 writer.write("Patient Gender: " + current.PatientGender + " , ");
                 writer.write("Patient health issue: " + current.PatientHealthIssue + " , ");
-                writer.write("Patient Bill : " + current.billAmount+ " , ");
-                writer.write("Prescription : " + current.prescription);
+                writer.write("Patient Bill : " + current.billAmount);
+
                 writer.newLine();
                 current = current.next;
             }
@@ -229,7 +228,7 @@ class PatientManagement {
                 int choice = sc.nextInt();
 
                 if (choice == 1) {
-                    curr.billAmount = 0;
+                    curr.billAmount = 0.0;
                     System.out.println("Bill paid successfully! ");
                     updateFile();
                 } else if (choice == 2) {
@@ -245,24 +244,7 @@ class PatientManagement {
         if (!found) {
             System.out.println("Patient with ID " + patientId + " not found.");
         }
-    }
-
-    public void showBill(int patientId){
-
-        Node curr = head;
-        boolean found = false;
-        while (curr != null) {
-            if (curr.patientId == patientId) {
-                System.out.println(" Name: " + curr.PatientName);
-                System.out.println(" Current Bill: " + curr.billAmount);
-                found = true;
-                break;
-            }
-            curr = curr.next;
-        }
-        if (!found) {
-            System.out.println("Patient with ID " + patientId + " not found.");
-        }
+        updateFile();
     }
 
     public Node SearchPatient(int patientId) {
@@ -295,6 +277,7 @@ class PatientManagement {
         if (!found) {
             return null;
         }
+        System.out.println("Patient not found with Id " + patientId);
         return null;
     }
     public void validateAge(int age) throws Exception {
@@ -433,8 +416,9 @@ class PatientManagement {
                 bill = line.substring(startIndex).trim();
 
                 // Extract Prescription
-                startIndex = line.lastIndexOf(",", line.lastIndexOf(":") - 1) + 1;
-                prescription = line.substring(startIndex).trim();
+                startIndex = line.indexOf(":", endIndex) + 1;
+                endIndex = line.indexOf(",", startIndex);
+                prescription = line.substring(startIndex, endIndex).trim();
 
                 // Manually converting strings to integers and double
                 int patientId = 0;
