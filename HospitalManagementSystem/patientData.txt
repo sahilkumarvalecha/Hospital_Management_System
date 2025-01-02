@@ -1,1 +1,0 @@
-Patient ID: 1 , Patient name: silo , Patient age: 19 , Patient phone number: 1234567898 , Patient Gender: f , Patient health issue: cough , Patient Bill : 1000.0 , Prescription : Prescription: null

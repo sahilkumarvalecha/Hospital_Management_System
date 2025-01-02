@@ -156,8 +156,7 @@ public class Main {
                                             case 3:
                                                 System.out.print("Enter patient id to delete appointment: ");
                                                 searchingPatientId = scanner.nextInt();
-                                                am.cancelAppointment(searchingPatientId);
-                                                am.updateFile();
+                                                am.deleteAppointment(searchingPatientId);
                                                 break;
                                             case 4:
                                                 System.out.print("Enter patient id to View Prescription: ");
@@ -282,9 +281,8 @@ public class Main {
                                 System.out.println("7. Assign Doctor To Patient");
                                 System.out.println("8. View All Doctors");
                                 System.out.println("9. Search For A Doctor");
-                                System.out.println("10. Show Bill For Patient");
-                                System.out.println("11. Go Back To Main Menu");
-                                System.out.println("12. Exit");
+                                System.out.println("10. Go Back To Main Menu");
+                                System.out.println("11. Exit");
                                 System.out.println("--------------------------------------");
                                 System.out.print("Enter your choice: ");
                                 try {
@@ -503,15 +501,10 @@ public class Main {
                                                 st.searchDoctor(specialization);
                                                 break;
                                             case 10:
-                                                System.out.print("Enter patient Id for checking bill: ");
-                                                patientId = scanner.nextInt();
-                                                st.showBillForPatient(patientId);
-                                                break;
-                                            case 11:
                                                 System.out.println("Going back to the main menu...");
                                                 isMainMenu = true; // Set flag to true to return to main menu
                                                 break; // Exit the patient menu loop
-                                            case 12:
+                                            case 11:
                                                 System.out.println("Exiting the system. Goodbye!");
                                                 //  System.exit(0);
                                                 scanner.close();
@@ -527,7 +520,7 @@ public class Main {
                                 } catch (Exception e) {
                                     throw new RuntimeException(e);
                                 }
-                            } while (choice4 != 11); // Exit the loop if choice is 6
+                            } while (choice4 != 10); // Exit the loop if choice is 6
                             break; // Exit the patient menu and return to main menu
 
                         case 4:

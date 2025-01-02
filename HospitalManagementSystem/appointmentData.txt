@@ -1,1 +1,0 @@
-Doctor ID:19, Patient ID:1, timeSlot:Wednesday 3PM

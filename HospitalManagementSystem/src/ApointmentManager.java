@@ -72,7 +72,6 @@ class AppointmentManager {
 
         // Load appointments from file
         //  loadFromFile();
-
         // Find and cancel the appointment from the array
         for (int i = 0; i < appointmentCount; i++) {
             if (appointments[i] != null && appointments[i].patientId == patientID) {
@@ -157,7 +156,7 @@ class AppointmentManager {
         }
         appointments = temp;
     }
-    private void deleteAppointment(int patientId) {
+    void deleteAppointment(int patientId) {
         boolean appointmentFound = false;
 
         for (int i = 0; i < appointmentCount; i++) {
@@ -168,6 +167,8 @@ class AppointmentManager {
                 for (int j = i; j < appointmentCount - 1; j++) {
                     appointments[j] = appointments[j + 1];
                 }
+
+                // Nullify the last index and decrement the count
                 appointments[--appointmentCount] = null;
                 System.out.println("Appointment deleted for Patient ID: " + patientId);
                 break;
@@ -176,11 +177,17 @@ class AppointmentManager {
 
         if (!appointmentFound) {
             System.out.println("No appointment found for Patient ID: " + patientId);
-        } else {
-            // Update the appointments file
+            return;  // Exit early if no appointment is found
+        }
+
+        try {
             updateFile();
+            System.out.println("File updated successfully after deleting the appointment.");
+        } catch (Exception e) {
+            System.out.println("Error while updating the file: " + e.getMessage());
         }
     }
+
     public void updatePatientBill(int patientId){
         pm.loadFromFile();
         Node curr = pm.head;
