@@ -1,0 +1,2 @@
+Doctor ID:5, Patient ID:1, timeSlot:Tuesday 10AM
+Doctor ID:4, Patient ID:2, timeSlot:Monday 9AM

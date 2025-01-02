@@ -1,7 +1,7 @@
-
 import java.io.*;
 import java.util.Arrays;
 import java.util.Scanner;
+
 
 
 public class Doctor {
@@ -102,6 +102,7 @@ class doctorManagement{
         if (!myFile.exists()) {
             return 1; // Start from 1 if file doesn't exist
         }
+        boolean isFileLoaded = false;
         try (Scanner sc = new Scanner(myFile)) {
             while (sc.hasNextLine()) {
                 String line = sc.nextLine();
@@ -109,17 +110,47 @@ class doctorManagement{
                 for (String part : parts) {
                     if (part.trim().startsWith("ID:")) {
                         String idStr = part.split(":")[1].trim();
-                        int id = Integer.parseInt(idStr);
+                        int id = stringToInt(idStr);
                         maxId = Math.max(maxId, id); // Track highest ID
                     }
                 }
+                isFileLoaded = true;
             }
+
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
-        loadFromFile();
+        if (!isFileLoaded) {
+            loadFromFile();
+        }
         return maxId + 1; // Increment the last ID
     }
+    private int stringToInt(String str) {
+        int result = 0;
+        boolean isNegative = false;
+        int i = 0;
+
+        // Check for a negative sign
+        if (str.charAt(0) == '-') {
+            isNegative = true;
+            i++;
+        }
+
+        // Process each character
+        for (; i < str.length(); i++) {
+            char ch = str.charAt(i);
+
+            // Ensure the character is a digit
+            if (ch < '0' || ch > '9') {
+                throw new NumberFormatException("Invalid character in number: " + ch);
+            }
+
+            result = result * 10 + (ch - '0');
+        }
+
+        return isNegative ? -result : result;
+    }
+
 
    /* private boolean isUniqueId(int id){
         for (Doctor doc : doctors){
@@ -147,6 +178,7 @@ class doctorManagement{
         doctors = temp;
     }
     public void addDoctor(String name, String specialization, String[] availability, int number) {
+        loadFromFile();
         if (count == doctors.length) {
             resize();
         }
@@ -184,9 +216,27 @@ class doctorManagement{
             System.out.println("Doctor with ID " +id+ " not found ");
         }
     }
+    public static String toLowerCase(String input) {
+        char[] result = new char[input.length()];
+
+        for (int i = 0; i < input.length(); i++) {
+            char ch = input.charAt(i);
+
+            // Check if the character is uppercase (A-Z)
+            if (ch >= 'A' && ch <= 'Z') {
+                // Convert to lowercase by adding 32 (ASCII difference)
+                result[i] = (char) (ch + 32);
+            } else {
+                // Assign the character as-is
+                result[i] = ch;
+            }
+        }
+
+        return new String(result); // Convert the char array back to a String
+    }
     public static String findSpecialization(String[][] specializationKeywords, String patientInput) {
         // Convert patient input to lowercase
-        String lowerCaseInput = patientInput.toLowerCase();
+        String lowerCaseInput = toLowerCase(patientInput);
 
         // Loop through each specialization row
         for (int i = 0; i < specializationKeywords.length; i++) {
@@ -201,22 +251,24 @@ class doctorManagement{
 
         return null; // No match found
     }
-    public void displayDoctorAccToHealthIssue(String healthIssue) {
+    public boolean displayDoctorAccToHealthIssue(String healthIssue) {
         // Find the specialization based on the health issue
+        boolean doctorFound = false; // To track if any doctor is found
+
         String docAccToIssue = findSpecialization(specializationKeywords, healthIssue);
 
         if (docAccToIssue == null) {
             System.out.println("No Doctors Available To Treat This Issue");
-            return;
+            return false;
         }
         if (count == 0) {
             System.out.println("No Doctors are available");
-            return;
+            return false;
         }
 
         // Track doctors already displayed to avoid duplicates
         boolean[] displayed = new boolean[count];
-        boolean doctorFound = false; // To track if any doctor is found
+
         int k = 1; // Display numbering
 
         System.out.println("Below Doctor(s) Are Available For Appointment: ");
@@ -234,7 +286,9 @@ class doctorManagement{
 
         if (!doctorFound) {
             System.out.println("No doctor found to treat " + healthIssue);
+            return false;
         }
+        return true;
     }
 
 
@@ -365,8 +419,7 @@ class doctorManagement{
     // Save all doctor details to a file
     public void saveToFile() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("doctorData.txt"))) {
-            for (int i = 0; i < count; i++) {
-                Doctor doctor = doctors[i];
+            for (Doctor doctor : doctors){
                 if (doctor != null) {
                     writer.write("ID:" + doctor.id + ", Name:" + doctor.doctorName +
                             ", Specialization:" + doctor.specialization +
@@ -378,19 +431,6 @@ class doctorManagement{
             System.out.println("Doctor data saved successfully.");
         } catch (IOException e) {
             System.out.println("Error saving doctor data: " + e.getMessage());
-        }
-    }
-    public void updateFile() {
-        // Step 3: Rewrite the file with the remaining appointments
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("appointmentData.txt"))) {
-            for (int i = 0; i < doctorIdCounter; i++) {
-                if (doctors[i] != null) {
-                    writer.write(doctors[i].toString());
-                    writer.newLine();
-                }
-            }
-        } catch (IOException e) {
-            System.out.println("Error updating appointment data: " + e.getMessage());
         }
     }
     public void loadFromFile() {

@@ -8,7 +8,7 @@ public class Main {
 
         PatientManagement pm = new PatientManagement();
         doctorManagement dm = new doctorManagement();
-        AppointmentManager am = new AppointmentManager(1);
+        AppointmentManager am = new AppointmentManager(100);
         //  Billing b = new Billing();
         Staff st = new Staff();
         pm.loadFromFile();
@@ -67,8 +67,11 @@ public class Main {
                                                 }
 
                                                 String healthIssue = curr.getPatientHealthIssue();
-                                                dm.displayDoctorAccToHealthIssue(healthIssue);
-
+                                                boolean doctorFound = dm.displayDoctorAccToHealthIssue(healthIssue);
+                                                if (!doctorFound) {
+                                                    System.out.println("No doctor available for " + healthIssue);
+                                                    break; // Skip the doctor selection
+                                                }
                                                 System.out.print("Choose a doctor (Enter the corresponding number): ");
                                                 int doctorOption = scanner.nextInt();
 
@@ -76,7 +79,7 @@ public class Main {
                                                 int doctorIndex = 1;
 
                                                 for (Doctor doctor : dm.doctors) {
-                                                    if (doctor != null && doctor.specialization.trim().equalsIgnoreCase(dm.findSpecialization(dm.specializationKeywords, healthIssue))) {
+                                                    if (doctor != null && doctor.specialization.equalsIgnoreCase(dm.findSpecialization(dm.specializationKeywords, healthIssue))) {
                                                         if (doctorIndex == doctorOption) {
                                                             selectedDoctor = doctor;
                                                             break;
@@ -121,6 +124,8 @@ public class Main {
 
                                                     if (!isSlotAvailable) {
                                                         System.out.println("This time slot is already taken. Please choose a different time.");
+                                                        pm.billAmount = 0.0;
+                                                       break;
                                                     } else {
                                                         am.appointments[am.appointmentCount++] = new Appointment(patientId, selectedDoctor.id, timeSlot);
 
@@ -131,7 +136,7 @@ public class Main {
                                                         am.resize();
                                                     }
                                                     pm.updatePatientBill(patientId, 1000);
-                                                    // b.updatePatientFile(patientId, curr.PatientName, curr.PatientAge, curr.PatientPhoneNUM, curr.PatientGender, curr.PatientHealthIssue);
+
                                                 }
 
                                                 break;
@@ -296,10 +301,8 @@ public class Main {
                                                 System.out.print("Enter Patient Health Issue: ");
                                                 String healthIssue = scanner.nextLine();
 //                            pm.createFile();
-
                                                 st.addNewPatient(patientName, age, phone, gender, healthIssue);
-                                                System.out.println("Patient added successfully with ID: " + pm.getPatientIdCounter());
-
+                                                System.out.println(" Patient added successfully ! ");
                                                 break;
                                             case 2:
                                                 System.out.print("Enter patient Id to update: ");
@@ -348,7 +351,7 @@ public class Main {
                                                 System.out.print("Enter Doctor Id to update: ");
                                                 int docId = scanner.nextInt();
                                                 scanner.nextLine();
-                                                System.out.println("Enter New patient Name: ");
+                                                System.out.println("Enter New Doctor Name: ");
                                                 String docName = scanner.nextLine();
                                                 System.out.println("Enter Doctor Specialization: ");
                                                 String docInfo = scanner.nextLine();

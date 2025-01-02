@@ -150,7 +150,6 @@ class AppointmentManager {
         updateFile();
     }
     public  void resize(){
-
         Appointment[] temp = new Appointment[appointments.length+10];
         for (int i=0; i<appointments.length; i++){
             temp[i] = appointments[i];
@@ -259,8 +258,8 @@ class AppointmentManager {
                     // Create a new Appointment object and add to the array
                     if (appointmentCount < appointments.length) {
                         appointments[appointmentCount++] = new Appointment(patientId, doctorId, timeSlot);
-                    } else {
-                        System.out.println("Appointment list is full! Cannot add more appointments.");
+                    } else if(appointmentCount == appointments.length){
+                        resize();
                     }
                 }
                 s.close();

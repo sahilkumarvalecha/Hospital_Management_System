@@ -72,8 +72,9 @@ class PatientManagement {
         this.head = null;
         this.last = null;
         this.patientIdCounter = patientIdInitilizer();
-        this.billAmount = 0;
+        this.billAmount = 0.0;
         this.prescription = null;
+        loadFromFile();
     }
 
     public int getPatientIdCounter() {
@@ -93,16 +94,43 @@ class PatientManagement {
                 for (String part : parts) {
                     if (part.trim().startsWith("Patient ID:")) {
                         String idStr = part.split(":")[1].trim();
-                        int id = Integer.parseInt(idStr);
+                        int id = stringToInt(idStr);
                         maxId = Math.max(maxId, id); // Keep track of the highest ID
                     }
                 }
+
             }
         } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
         return maxId + 1;
     }
+    private int stringToInt(String str) {
+        int result = 0;
+        boolean isNegative = false;
+        int i = 0;
+
+        // Check for a negative sign
+        if (str.charAt(0) == '-') {
+            isNegative = true;
+            i++;
+        }
+
+        // Convert each character to its numeric value
+        for (; i < str.length(); i++) {
+            char ch = str.charAt(i);
+
+            // Validate the character
+            if (ch < '0' || ch > '9') {
+                throw new NumberFormatException("Invalid character in number: " + ch);
+            }
+
+            result = result * 10 + (ch - '0');
+        }
+
+        return isNegative ? -result : result;
+    }
+
 
     public boolean isEmpty() {
         if (head == null) {
@@ -126,8 +154,8 @@ class PatientManagement {
     }
 
     public void insertPatient(String PatientName, int PatientAge, String PatientPhoneNUM, String PatientGender, String PatientHealthIssue) {
-        Node newnode = new Node(patientIdCounter, PatientName, PatientAge, PatientPhoneNUM, PatientGender, PatientHealthIssue);
-        patientIdCounter++;
+       int patientId =  patientIdCounter++;
+        Node newnode = new Node(patientId, PatientName, PatientAge, PatientPhoneNUM, PatientGender, PatientHealthIssue);
         if (isEmpty()) {
             head = newnode;
             last = newnode;
@@ -136,7 +164,6 @@ class PatientManagement {
             last = newnode;
         }
         writeInFile(newnode);
-
     }
 
     public void writeInFile(Node patient) {
@@ -179,15 +206,16 @@ class PatientManagement {
         while (curr != null){
             if (curr.patientId == patientId){
                 curr.billAmount += amount;
+                updateFile();
                 break;
             }
             curr = curr.next;
         }
-        updateFile();
+
     }
     public void updateFile() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("patientData.txt"))) {
-            loadFromFile();
+//            loadFromFile();
             Node current = head;
             while (current != null) {
                 writer.write("Patient ID: " + current.patientId + " , ");
@@ -243,7 +271,6 @@ class PatientManagement {
         }
     }
     public void showBill(int patientId){
-        loadFromFile();
         Node curr = head;
         while (curr != null) {
             if (curr.patientId == patientId) {
@@ -282,7 +309,6 @@ class PatientManagement {
             return current;
         }
         if (!found) {
-            System.out.println("No patient found with Id" + patientId);
             return null;
         }
         return null;
@@ -502,7 +528,7 @@ class PatientManagement {
             while ((line = br.readLine()) != null) {
                 // Manually extracting the data by looking for the position of ':'
                 int startIndex, endIndex;
-                String id = "", name = "", age = "", phone = "", gender = "", healthIssue = "", bill = "";
+                String id = "", name = "", age = "", phone = "", gender = "", healthIssue = "", bill = "", prescription = "";
 
                 // Extract patient ID
                 startIndex = line.indexOf(":") + 1;
@@ -538,6 +564,10 @@ class PatientManagement {
                 startIndex = line.lastIndexOf(":") + 1;
                 bill = line.substring(startIndex).trim();
 
+                // Extract Prescription
+                startIndex = line.lastIndexOf(",", line.lastIndexOf(":") - 1) + 1;
+                prescription = line.substring(startIndex).trim();
+
                 // Manually converting strings to integers and double
                 int patientId = 0;
                 for (int i = 0; i < id.length(); i++) {
@@ -556,7 +586,7 @@ class PatientManagement {
                     char c = bill.charAt(i);
                     if (c == '.') {
                         isDecimal = true;
-                    } else {
+                    } else if (c >= '0' && c <= '9') {
                         if (isDecimal) {
                             billAmount += (c - '0') * decimalFactor;
                             decimalFactor /= 10;
@@ -566,9 +596,12 @@ class PatientManagement {
                     }
                 }
 
+
+
                 // Create a new patient node and add it to the list
                 Node newNode = new Node(patientId, name, patientAge, phone, gender, healthIssue);
                 newNode.billAmount = billAmount;
+                newNode.prescription = prescription;
 
                 if (isEmpty()) {
                     head = newNode;
