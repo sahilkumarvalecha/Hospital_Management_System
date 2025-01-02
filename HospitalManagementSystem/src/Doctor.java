@@ -3,7 +3,6 @@ import java.util.Arrays;
 import java.util.Scanner;
 
 
-
 public class Doctor {
     int id;
     String doctorName;
@@ -151,7 +150,6 @@ class doctorManagement{
         return isNegative ? -result : result;
     }
 
-
    /* private boolean isUniqueId(int id){
         for (Doctor doc : doctors){
             if (doc!= null && doc.id == id){
@@ -183,7 +181,7 @@ class doctorManagement{
             resize();
         }
         doctors[count++] = new Doctor(doctorIdCounter, name, specialization, availability, number);
-
+        doctorIdCounter++;
         saveToFile();
     }
     public void deleteDoctor(int id){
@@ -290,8 +288,6 @@ class doctorManagement{
         }
         return true;
     }
-
-
     public Doctor searchDoctorById(int Id) {
         if (count == 0) {
             return null;
@@ -431,6 +427,19 @@ class doctorManagement{
             System.out.println("Doctor data saved successfully.");
         } catch (IOException e) {
             System.out.println("Error saving doctor data: " + e.getMessage());
+        }
+    }
+    public void updateFile() {
+        // Step 3: Rewrite the file with the remaining appointments
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("appointmentData.txt"))) {
+            for (int i = 0; i < doctorIdCounter; i++) {
+                if (doctors[i] != null) {
+                    writer.write(doctors[i].toString());
+                    writer.newLine();
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error updating appointment data: " + e.getMessage());
         }
     }
     public void loadFromFile() {

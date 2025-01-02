@@ -72,7 +72,7 @@ class PatientManagement {
         this.head = null;
         this.last = null;
         this.patientIdCounter = patientIdInitilizer();
-        this.billAmount = 0.0;
+        this.billAmount = 0;
         this.prescription = null;
         loadFromFile();
     }
@@ -101,7 +101,7 @@ class PatientManagement {
 
             }
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
         return maxId + 1;
     }
@@ -130,8 +130,6 @@ class PatientManagement {
 
         return isNegative ? -result : result;
     }
-
-
     public boolean isEmpty() {
         if (head == null) {
             return true;
@@ -154,8 +152,8 @@ class PatientManagement {
     }
 
     public void insertPatient(String PatientName, int PatientAge, String PatientPhoneNUM, String PatientGender, String PatientHealthIssue) {
-       int patientId =  patientIdCounter++;
-        Node newnode = new Node(patientId, PatientName, PatientAge, PatientPhoneNUM, PatientGender, PatientHealthIssue);
+        Node newnode = new Node(patientIdCounter, PatientName, PatientAge, PatientPhoneNUM, PatientGender, PatientHealthIssue);
+        patientIdCounter++;
         if (isEmpty()) {
             head = newnode;
             last = newnode;
@@ -164,19 +162,20 @@ class PatientManagement {
             last = newnode;
         }
         writeInFile(newnode);
+
     }
 
     public void writeInFile(Node patient) {
         try {
             FileWriter fileWriter = new FileWriter("patientData.txt", true);
 
-            fileWriter.write("Patient ID: " +patient.patientId+ " , ");
-            fileWriter.write("Patient name: " +patient.PatientName+ " , ");
-            fileWriter.write("Patient age: " +patient.PatientAge+ " , ");
-            fileWriter.write("Patient phone number: " +patient.PatientPhoneNUM+ " , ");
-            fileWriter.write("Patient Gender: " +patient.PatientGender+ " , ");
-            fileWriter.write("Patient health issue: " +patient.PatientHealthIssue+ " , ");
-            fileWriter.write("Patient Bill : " +patient.billAmount+ " , ");
+            fileWriter.write("Patient ID: " + patient.patientId + " , ");
+            fileWriter.write("Patient name: " + patient.PatientName + " , ");
+            fileWriter.write("Patient age: " + patient.PatientAge + " , ");
+            fileWriter.write("Patient phone number: " + patient.PatientPhoneNUM + " , ");
+            fileWriter.write("Patient Gender: " + patient.PatientGender + " , ");
+            fileWriter.write("Patient health issue: " + patient.PatientHealthIssue + " , ");
+            fileWriter.write("Patient Bill : " + patient.billAmount + " , ");
             fileWriter.write("Prescription: " + patient.prescription);
 
             fileWriter.write("\n");
@@ -201,10 +200,11 @@ class PatientManagement {
             e.printStackTrace();
         }
     }
-    public void updatePatientBill(int patientId, int amount){
+
+    public void updatePatientBill(int patientId, int amount) {
         Node curr = head;
-        while (curr != null){
-            if (curr.patientId == patientId){
+        while (curr != null) {
+            if (curr.patientId == patientId) {
                 curr.billAmount += amount;
                 updateFile();
                 break;
@@ -213,9 +213,9 @@ class PatientManagement {
         }
 
     }
+
     public void updateFile() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("patientData.txt"))) {
-//            loadFromFile();
             Node current = head;
             while (current != null) {
                 writer.write("Patient ID: " + current.patientId + " , ");
@@ -224,7 +224,8 @@ class PatientManagement {
                 writer.write("Patient phone number: " + current.PatientPhoneNUM + " , ");
                 writer.write("Patient Gender: " + current.PatientGender + " , ");
                 writer.write("Patient health issue: " + current.PatientHealthIssue + " , ");
-                writer.write("Patient Bill : " + current.billAmount);
+                writer.write("Patient Bill : " + current.billAmount+ " , ");
+                writer.write("Prescription : " + current.prescription);
                 writer.newLine();
                 current = current.next;
             }
@@ -234,15 +235,15 @@ class PatientManagement {
         }
     }
 
-    public void payMyBill(int patientId){
+    public void payMyBill(int patientId) {
         Node curr = head;
         boolean found = false;
-        while (curr != null){
-            if (curr.patientId == patientId){
+        while (curr != null) {
+            if (curr.patientId == patientId) {
                 found = true;
                 System.out.println(" Name: " + curr.PatientName);
                 System.out.println("Current Bill: " + curr.billAmount);
-                if (curr.billAmount == 0){
+                if (curr.billAmount == 0) {
                     System.out.println("Your bill is zero! you haven't booked appointment yet");
                     return;
                 }
@@ -252,13 +253,13 @@ class PatientManagement {
                 Scanner sc = new Scanner(System.in);
                 int choice = sc.nextInt();
 
-                if (choice == 1){
+                if (choice == 1) {
                     curr.billAmount = 0;
                     System.out.println("Bill paid successfully! ");
                     updateFile();
-                }else if (choice == 2){
+                } else if (choice == 2) {
                     System.out.println("Payment cancelled ");
-                }else {
+                } else {
                     System.out.println("Wrong choice! ");
                 }
                 break;
@@ -270,14 +271,22 @@ class PatientManagement {
             System.out.println("Patient with ID " + patientId + " not found.");
         }
     }
+
     public void showBill(int patientId){
+
         Node curr = head;
+        boolean found = false;
         while (curr != null) {
             if (curr.patientId == patientId) {
                 System.out.println(" Name: " + curr.PatientName);
                 System.out.println(" Current Bill: " + curr.billAmount);
+                found = true;
+                break;
             }
             curr = curr.next;
+        }
+        if (!found) {
+            System.out.println("Patient with ID " + patientId + " not found.");
         }
     }
 
@@ -313,44 +322,62 @@ class PatientManagement {
         }
         return null;
     }
-
-  /*  public void bookAppointment(int patientId, String appointmentDetails){
-=======
->>>>>>> Stashed changes
-
-    public void getPatientBillAmount(int Id) {
-        if (isEmpty()) {
-            System.out.println("The list is empty. Patient not found.");
-            return;
+    public void validateAge(int age) throws Exception {
+        if (age < 0 || age > 120) {
+            throw new Exception("Invalid age: must be between 0 and 120");
         }
-
-        Node current = head;
-        boolean found = false;
-
-
-        while (current != null) {
-            if (current.patientId == Id) { // Case-insensitive match
-                found = true;
-               current.billAmount += 1000;
+    }
+    public void validatePhoneNumber(String phoneNumber) throws Exception {
+        int length = 0;
+        for (int i = 0; i < phoneNumber.length(); i++) {
+            char c = phoneNumber.charAt(i);
+            if (c < '0' || c > '9') {
+                throw new Exception("Invalid phone number: contains non-numeric characters");
             }
-            current = current.next; // Move to the next node
+            length++;
         }
-            System.out.println("No patient found with Id" + Id);
+        if (length != 10) {
+            throw new Exception("Invalid phone number: must be a 10-digit number");
+        } System.out.println("Valid phone number: " + phoneNumber);
     }
 
+    /*  public void bookAppointment(int patientId, String appointmentDetails){
+  =======
+  >>>>>>> Stashed changes
 
-    public void bookAppointment(int patientId, String appointmentDetails){
->>>>>>> 224688f32385563b21866c7afd96512baf6e4b8e
-        Node curr = head;
-        while (curr != null){
-            if (curr.patientId == patientId){
+      public void getPatientBillAmount(int Id) {
+          if (isEmpty()) {
+              System.out.println("The list is empty. Patient not found.");
+              return;
+          }
 
-//                curr.bookAppointment(appointmentDetails);
-            }
-            curr = curr.next;
-        }
-        System.out.println("No patient found with name: " + patientId);
-    }*/
+          Node current = head;
+          boolean found = false;
+
+
+          while (current != null) {
+              if (current.patientId == Id) { // Case-insensitive match
+                  found = true;
+                 current.billAmount += 1000;
+              }
+              current = current.next; // Move to the next node
+          }
+              System.out.println("No patient found with Id" + Id);
+      }
+
+
+      public void bookAppointment(int patientId, String appointmentDetails){
+  >>>>>>> 224688f32385563b21866c7afd96512baf6e4b8e
+          Node curr = head;
+          while (curr != null){
+              if (curr.patientId == patientId){
+
+  //                curr.bookAppointment(appointmentDetails);
+              }
+              curr = curr.next;
+          }
+          System.out.println("No patient found with name: " + patientId);
+      }*/
  /*   public void viewAppointments(String name){
         Node curr = head;
         while (curr != null){
@@ -492,26 +519,26 @@ class PatientManagement {
 
         return left;
     }
-    public void DisplayDataOfPatient(){
+    public void DisplayDataOfPatient() {
         if (isEmpty()) {
             System.out.println("No patients in the list.");
             return;
         }
         Node current = head;
         while (current != null) {
-            System.out.print(" Patient ID: " + current.patientId);
-            System.out.print(", Patient Name: " + current.PatientName);
-            System.out.print(", Patient Age: " + current.PatientAge);
-            System.out.print(", Patient Phone Number: " + current.PatientPhoneNUM);
-            System.out.print(", Patient Gender: " + current.PatientGender);
-            System.out.print(", Patient Health Issue: " + current.PatientHealthIssue);
+            System.out.print("Patient ID: " + current.patientId);
+            System.out.print(", Name: " + current.PatientName);
+            System.out.print(", Age: " + current.PatientAge);
+            System.out.print(", Phone Number: " + current.PatientPhoneNUM);
+            System.out.print(", Gender: " + current.PatientGender);
+            System.out.print(", Health Issue: " + current.PatientHealthIssue);
             System.out.print(", Bill Amount: " + current.billAmount);
-            System.out.print(", Appointment Details: " + current.appointmentDetails);
-            System.out.println(" ");
-
-            current = current.next;  // Move to the next node
+            System.out.print(", Prescription: " + (current.prescription != null ? current.prescription : "None"));
+            System.out.println();
+            current = current.next;
         }
     }
+
     public void loadFromFile() {
         try {
             File file = new File("patientData.txt");
@@ -520,6 +547,9 @@ class PatientManagement {
                 System.out.println("No previous patient data found.");
                 return;
             }
+            // Clear the list before loading
+            head = null;
+            last = null;
 
             FileReader fr = new FileReader(file);
             BufferedReader br = new BufferedReader(fr);
@@ -595,9 +625,6 @@ class PatientManagement {
                         }
                     }
                 }
-
-
-
                 // Create a new patient node and add it to the list
                 Node newNode = new Node(patientId, name, patientAge, phone, gender, healthIssue);
                 newNode.billAmount = billAmount;
@@ -618,5 +645,5 @@ class PatientManagement {
         }
     }
 
-}
 
+}

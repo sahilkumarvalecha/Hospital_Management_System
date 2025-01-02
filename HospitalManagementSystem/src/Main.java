@@ -8,8 +8,7 @@ public class Main {
 
         PatientManagement pm = new PatientManagement();
         doctorManagement dm = new doctorManagement();
-        AppointmentManager am = new AppointmentManager(100);
-        //  Billing b = new Billing();
+        AppointmentManager am = new AppointmentManager(20);
         Staff st = new Staff();
         pm.loadFromFile();
         dm.loadFromFile();
@@ -67,11 +66,15 @@ public class Main {
                                                 }
 
                                                 String healthIssue = curr.getPatientHealthIssue();
-                                                boolean doctorFound = dm.displayDoctorAccToHealthIssue(healthIssue);
-                                                if (!doctorFound) {
-                                                    System.out.println("No doctor available for " + healthIssue);
-                                                    break; // Skip the doctor selection
+                                                String specialization = dm.findSpecialization(dm.specializationKeywords, healthIssue);
+
+                                                if (specialization == null || specialization.isEmpty()) {
+                                                    System.out.println("No specialization found for the given health issue.");
+                                                    break;
                                                 }
+
+                                                dm.displayDoctorAccToHealthIssue(healthIssue);
+
                                                 System.out.print("Choose a doctor (Enter the corresponding number): ");
                                                 int doctorOption = scanner.nextInt();
 
@@ -79,7 +82,7 @@ public class Main {
                                                 int doctorIndex = 1;
 
                                                 for (Doctor doctor : dm.doctors) {
-                                                    if (doctor != null && doctor.specialization.equalsIgnoreCase(dm.findSpecialization(dm.specializationKeywords, healthIssue))) {
+                                                    if (doctor != null && doctor.specialization.equalsIgnoreCase(specialization)) {
                                                         if (doctorIndex == doctorOption) {
                                                             selectedDoctor = doctor;
                                                             break;
@@ -124,22 +127,21 @@ public class Main {
 
                                                     if (!isSlotAvailable) {
                                                         System.out.println("This time slot is already taken. Please choose a different time.");
-                                                        pm.billAmount = 0.0;
-                                                       break;
+                                                        break;
                                                     } else {
                                                         am.appointments[am.appointmentCount++] = new Appointment(patientId, selectedDoctor.id, timeSlot);
-
                                                         am.writeAppointmentsInFile(patientId, selectedDoctor.id, timeSlot);
                                                         System.out.println("Appointment booked successfully with " + selectedDoctor.doctorName + " at " + timeSlot);
+                                                        if (am.appointmentCount == am.appointments.length) {
+                                                            am.resize();
+                                                        }
+                                                        pm.updatePatientBill(patientId, 1000);
                                                     }
-                                                    if (am.appointmentCount == am.appointments.length) {
-                                                        am.resize();
-                                                    }
-                                                    pm.updatePatientBill(patientId, 1000);
-
                                                 }
 
                                                 break;
+
+
                                             case 2:
                                                 System.out.print("Enter patient Id to view appointment details: ");
                                                 int searchingPatientId = scanner.nextInt();
@@ -158,6 +160,11 @@ public class Main {
                                                 am.updateFile();
                                                 break;
                                             case 4:
+                                                System.out.print("Enter patient id to View Prescription: ");
+                                                searchingPatientId = scanner.nextInt();
+                                                Node current = pm.SearchPatient(searchingPatientId);
+                                                System.out.println("Patient Name: " + current.PatientName +
+                                                        "\n Prescription: "+ current.prescription);
                                                 break;
                                             case 5:
                                                 System.out.print("Enter patient id to pay Bill: ");
@@ -276,9 +283,8 @@ public class Main {
                                 System.out.println("8. View All Doctors");
                                 System.out.println("9. Search For A Doctor");
                                 System.out.println("10. Show Bill For Patient");
-                                System.out.println("11. View All Billing Records");
-                                System.out.println("12. Go Back To Main Menu");
-                                System.out.println("13. Exit");
+                                System.out.println("11. Go Back To Main Menu");
+                                System.out.println("12. Exit");
                                 System.out.println("--------------------------------------");
                                 System.out.print("Enter your choice: ");
                                 try {
@@ -291,18 +297,44 @@ public class Main {
                                             case 1:
                                                 System.out.print("Enter Patient Name: ");
                                                 String patientName = scanner.nextLine();
-                                                System.out.print("Enter Patient Age: ");
-                                                int age = scanner.nextInt();
-                                                System.out.print("Enter Patient Phone Number: ");
-                                                String phone = scanner.next();
-                                                scanner.nextLine(); // Consume newline
+
+                                                // Input and validate patient age
+                                                int age = 0;
+                                                while (true) {
+                                                    try {
+                                                        System.out.print("Enter Patient Age: ");
+                                                        age = scanner.nextInt();
+                                                        pm.validateAge(age); // Assuming this method throws an exception for invalid age
+                                                        break; // Exit the loop if age is valid
+                                                    } catch (Exception e) {
+                                                        System.out.println(e.getMessage()); // Print validation error message
+                                                        scanner.nextLine(); // Clear invalid input
+                                                    }
+                                                }
+
+                                                // Input and validate patient phone number
+                                                String phone = "";
+                                                while (true) {
+                                                    try {
+                                                        System.out.print("Enter Patient Phone Number: ");
+                                                        phone = scanner.next();
+                                                        pm.validatePhoneNumber(phone); // Assuming this method throws an exception for invalid phone numbers
+                                                        break; // Exit the loop if phone number is valid
+                                                    } catch (Exception e) {
+                                                        System.out.println(e.getMessage()); // Print validation error message
+                                                    }
+                                                }
+                                                scanner.nextLine(); // Consume leftover newline
+
                                                 System.out.print("Enter Patient Gender: ");
                                                 String gender = scanner.nextLine();
+
                                                 System.out.print("Enter Patient Health Issue: ");
                                                 String healthIssue = scanner.nextLine();
-//                            pm.createFile();
+
                                                 st.addNewPatient(patientName, age, phone, gender, healthIssue);
-                                                System.out.println(" Patient added successfully ! ");
+                                                System.out.println(" Patient added successfully! ");
+
                                                 break;
                                             case 2:
                                                 System.out.print("Enter patient Id to update: ");
@@ -320,38 +352,40 @@ public class Main {
                                                 break;
                                             case 3:
                                                 System.out.print("Enter Doctor Name: ");
-                                                String doctorName = scanner.next();
+                                                String doctorName = scanner.nextLine();
                                                 scanner.nextLine();
                                                 System.out.print("Enter Doctor specialization: ");
                                                 String specialization = scanner.nextLine();
                                                 System.out.print("Enter Doctor Phone Number: ");
                                                 int number = scanner.nextInt();
                                                 scanner.nextLine(); // Consume newline
-                                                System.out.print("How many slots you want to add in your Schedule? ");
-                                                int slotCount = scanner.nextInt();
-                                                if (slotCount <= 0) {
-                                                    System.out.print("Slot Count Can't be less than 0");
-                                                    //send him back to the input for how many slots
-                                                } else if (slotCount >= 20) {
-                                                    System.out.print("Slot Can't Be Greater than 20");
-                                                    //send him back to the input for how many slots
-                                                } else {
-//                                dm.createFile();
-                                                    String[] availability = new String[slotCount];
-                                                    for (int i = 0; i < availability.length; i++) {
-                                                        System.out.print("Enter Doctor Availability For Slots(e.g., Tuesday 2PM): ");
-                                                        availability[i] = scanner.next();
-                                                        scanner.nextLine();
+                                                int slotCount = 0; // Initialize slot count
+                                                boolean isValidSlotCount = false;
+                                                while (!isValidSlotCount) {
+                                                    System.out.print("How many slots you want to add in your Schedule? (Enter a number between 1 and 20): ");
+                                                    slotCount = scanner.nextInt();
+                                                    scanner.nextLine(); // Consume newline
+
+                                                    if (slotCount >= 1 && slotCount <= 20) {
+                                                        isValidSlotCount = true; // Exit the loop if the slot count is valid
+                                                    } else {
+                                                        System.out.println("Invalid choice. Please enter a number between 1 and 20.");
                                                     }
-                                                    st.addNewDoctor(doctorName, specialization, availability, number);
-                                                    System.out.println("Doctor added successfully!");
                                                 }
+                                                String[] availability = new String[slotCount];
+                                                for (int i = 0; i < availability.length; i++) {
+                                                    System.out.print("Enter Doctor Availability For Slots(e.g., Tuesday 2PM): ");
+                                                    availability[i] = scanner.nextLine();
+                                                    scanner.nextLine();
+                                                }
+                                                st.addNewDoctor(doctorName, specialization, availability, number);
+                                                System.out.println("Doctor added successfully!");
                                                 break;
                                             case 4:
                                                 System.out.print("Enter Doctor Id to update: ");
                                                 int docId = scanner.nextInt();
                                                 scanner.nextLine();
-                                                System.out.println("Enter New Doctor Name: ");
+                                                System.out.println("Enter New patient Name: ");
                                                 String docName = scanner.nextLine();
                                                 System.out.println("Enter Doctor Specialization: ");
                                                 String docInfo = scanner.nextLine();
@@ -359,7 +393,8 @@ public class Main {
                                                 String docSchedule = scanner.nextLine();
                                                 System.out.println("How many slots you want to add in your Schedule?");
                                                 slotCount = scanner.nextInt();
-                                                String[] availability = new String[slotCount];
+                                                scanner.nextLine();
+                                                availability = new String[slotCount];
                                                 if (slotCount <= 0) {
                                                     System.out.print("Slot Count Can't be less than 0");
                                                     //send him back to the input for how many slots
@@ -473,13 +508,10 @@ public class Main {
                                                 st.showBillForPatient(patientId);
                                                 break;
                                             case 11:
-
-                                                break;
-                                            case 12:
                                                 System.out.println("Going back to the main menu...");
                                                 isMainMenu = true; // Set flag to true to return to main menu
                                                 break; // Exit the patient menu loop
-                                            case 13:
+                                            case 12:
                                                 System.out.println("Exiting the system. Goodbye!");
                                                 //  System.exit(0);
                                                 scanner.close();
@@ -492,9 +524,10 @@ public class Main {
                                 } catch (InputMismatchException e) {
                                     System.out.println("Invalid input! Please enter a valid input.");
                                     scanner.nextLine(); // Clear the invalid input
+                                } catch (Exception e) {
+                                    throw new RuntimeException(e);
                                 }
-                            }
-                            while (choice4 != 12); // Exit the loop if choice is 6
+                            } while (choice4 != 11); // Exit the loop if choice is 6
                             break; // Exit the patient menu and return to main menu
 
                         case 4:
@@ -511,6 +544,5 @@ public class Main {
                 scanner.nextLine(); // Clear the invalid input
             }
         }
-        while (true) ;
     }
 }

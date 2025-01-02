@@ -45,10 +45,10 @@ class AppointmentManager {
         }
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("appointmentData.txt", true))) {
 
-                    writer.write("Doctor ID:" + doctorId +
-                            ", Patient ID:" + patientId +
-                            ", timeSlot:" + timeSlot);
-                    writer.newLine();
+            writer.write("Doctor ID:" + doctorId +
+                    ", Patient ID:" + patientId +
+                    ", timeSlot:" + timeSlot);
+            writer.newLine();
 
             System.out.println("Appointment Data saved successfully.");
         } catch (IOException e) {
@@ -71,7 +71,7 @@ class AppointmentManager {
         boolean appointmentFound = false;
 
         // Load appointments from file
-      //  loadFromFile();
+        //  loadFromFile();
 
         // Find and cancel the appointment from the array
         for (int i = 0; i < appointmentCount; i++) {
@@ -150,6 +150,7 @@ class AppointmentManager {
         updateFile();
     }
     public  void resize(){
+
         Appointment[] temp = new Appointment[appointments.length+10];
         for (int i=0; i<appointments.length; i++){
             temp[i] = appointments[i];
@@ -182,23 +183,27 @@ class AppointmentManager {
     }
     public void updatePatientBill(int patientId){
         pm.loadFromFile();
-       Node curr = pm.head;
+        Node curr = pm.head;
         boolean patientFound = false;
         while (curr != null){
-           if (curr.patientId == patientId){
-               curr.billAmount -= 1000;
-               patientFound = true;
-               break;
-           }
-           curr = curr.next;
-       }
+            if (curr.billAmount > 0) {
+                if (curr.patientId == patientId) {
+                    curr.billAmount -= 1000;
+                    patientFound = true;
+                    break;
+                }
+                curr = curr.next;
+            }else {
+                curr.billAmount = 0;
+            }
+        }
         if (!patientFound) {
             System.out.println("Patient with ID " + patientId + " not found.");
         }
         if (patientFound){
             pm.updateFile();
         }
-       }
+    }
 
     public void updateFile() {
         // Step 3: Rewrite the file with the remaining appointments

@@ -1,8 +1,1 @@
-Patient ID: 1 , Patient name: anchal , Patient age: 20 , Patient phone number: 638281 , Patient Gender: F , Patient health issue: acne , Patient Bill : 1000.0
-Patient ID: 2 , Patient name: silo , Patient age: 19 , Patient phone number: 53781 , Patient Gender: F , Patient health issue: rashes , Patient Bill : 1000.0
-Patient ID: 1 , Patient name: anchal , Patient age: 20 , Patient phone number: 638281 , Patient Gender: F , Patient health issue: acne , Patient Bill : 0.0
-Patient ID: 2 , Patient name: silo , Patient age: 19 , Patient phone number: 53781 , Patient Gender: F , Patient health issue: rashes , Patient Bill : 0.0
-Patient ID: 1 , Patient name: anchal , Patient age: 20 , Patient phone number: 638281 , Patient Gender: F , Patient health issue: acne , Patient Bill : 1000.0
-Patient ID: 2 , Patient name: silo , Patient age: 19 , Patient phone number: 53781 , Patient Gender: F , Patient health issue: rashes , Patient Bill : 0.0
-Patient ID: 1 , Patient name: anchal , Patient age: 20 , Patient phone number: 638281 , Patient Gender: F , Patient health issue: acne , Patient Bill : 0.0
-Patient ID: 2 , Patient name: silo , Patient age: 19 , Patient phone number: 53781 , Patient Gender: F , Patient health issue: rashes , Patient Bill : 0.0
+Patient ID: 1 , Patient name: silo , Patient age: 19 , Patient phone number: 1234567898 , Patient Gender: f , Patient health issue: cough , Patient Bill : 1000.0 , Prescription : Prescription: null
