@@ -199,9 +199,8 @@ public class Main {
                                 System.out.println("1. View Personal Schedule");
                                 System.out.println("2. View Assigned Patients");
                                 System.out.println("3. Check Patient");
-                                System.out.println("4. Generate Billing Information");
-                                System.out.println("5. Go Back To Main Menu");
-                                System.out.println("6. Exit");
+                                System.out.println("4. Go Back To Main Menu");
+                                System.out.println("5. Exit");
                                 System.out.println("--------------------------------------");
                                 System.out.print("Enter your choice: ");
                                 try {
@@ -245,13 +244,10 @@ public class Main {
                                                 }
                                                 break;
                                             case 4:
-
-                                                break;
-                                            case 5:
                                                 System.out.println("Going back to the main menu...");
                                                 isMainMenu = true; // Set flag to true to return to main menu
                                                 break; // Exit the patient menu loop
-                                            case 6:
+                                            case 5:
                                                 System.out.println("Exiting the system. Goodbye!");
                                                 scanner.close();
                                                 System.exit(0);
@@ -264,7 +260,7 @@ public class Main {
                                     System.out.println("Invalid input! Please enter a valid input.");
                                     scanner.nextLine(); // Clear the invalid input
                                 }
-                            } while (choice3 != 5); // Exit the loop if choice is 6
+                            } while (choice3 != 4); // Exit the loop if choice is 6
                             break; // Exit the patient menu and return to main menu
                         case 3:
                             int choice4 = 0;

@@ -29,15 +29,6 @@ public class Node { // Static variable to keep track of the ID across instances
         this.prescription = null;
         this.next = null;
     }
-
-
-    public int getpatientId() {
-        return patientId;
-    }
-    public void setBillAmount(double billAmount) {
-        this.billAmount=billAmount;
-    }
-
     public String getPatientHealthIssue() {
         return PatientHealthIssue;
     }
@@ -46,20 +37,9 @@ public class Node { // Static variable to keep track of the ID across instances
 
         this.diagnosis = diagnosis;
     }
-
-    // Method to set Prescription (typically done by a doctor)
     public void setPrescription(String prescription) {
         this.prescription = prescription;
     }
-    public void viewDiagnosisOrPrescription(String patientName){
-        if(this.PatientName.equalsIgnoreCase(patientName)){
-            System.out.println("Diagnosis: " + (diagnosis !=null ? diagnosis : "unAvailable"));
-            System.out.println("Prescription: " + (prescription!=null ? prescription : "unAvailable"));
-        }else {
-            System.out.println("No patient found with this name " +patientName);
-        }
-    }
-
 }
 class PatientManagement {
     Node head;
@@ -76,11 +56,6 @@ class PatientManagement {
         this.prescription = null;
         loadFromFile();
     }
-
-    public int getPatientIdCounter() {
-        return patientIdCounter;
-    }
-
     private int patientIdInitilizer() {
         File myFile = new File("patientData.txt");
         int maxId = 0;
@@ -359,65 +334,6 @@ class PatientManagement {
 
         System.out.println("Valid phone number: " + phoneNumber);
     }
-
-
-    /*  public void bookAppointment(int patientId, String appointmentDetails){
-  =======
-  >>>>>>> Stashed changes
-
-      public void getPatientBillAmount(int Id) {
-          if (isEmpty()) {
-              System.out.println("The list is empty. Patient not found.");
-              return;
-          }
-
-          Node current = head;
-          boolean found = false;
-
-
-          while (current != null) {
-              if (current.patientId == Id) { // Case-insensitive match
-                  found = true;
-                 current.billAmount += 1000;
-              }
-              current = current.next; // Move to the next node
-          }
-              System.out.println("No patient found with Id" + Id);
-      }
-
-
-      public void bookAppointment(int patientId, String appointmentDetails){
-  >>>>>>> 224688f32385563b21866c7afd96512baf6e4b8e
-          Node curr = head;
-          while (curr != null){
-              if (curr.patientId == patientId){
-
-  //                curr.bookAppointment(appointmentDetails);
-              }
-              curr = curr.next;
-          }
-          System.out.println("No patient found with name: " + patientId);
-      }*/
- /*   public void viewAppointments(String name){
-        Node curr = head;
-        while (curr != null){
-            if (curr.PatientName.equalsIgnoreCase(name)){
-                curr.viewAppointment();
-            }
-            curr = curr.next;
-        }
-        System.out.println("No patient found with name: " +name);
-    }
-    public void cancelAppointment(String patientName){
-        Node curr = head;
-        while (curr != null){
-            if (curr.PatientName.equalsIgnoreCase(patientName)){
-                curr.cancelAppointment();
-            }
-            curr = curr.next;
-        }
-        System.out.println("No patient found with name: " +patientName);
-    }*/
     public void updatePatientInfo(int patientId, String name, int age, String gender, String healthIssue){
         Node curr = head;
         while (curr!=null ){
@@ -441,104 +357,6 @@ class PatientManagement {
         }
         System.out.println("No patient found with ID: " +patientId);
     }
-    public void deletePatient(int patientId){
-        if (isEmpty()){
-            System.out.println(" Patient List is Empty ");
-            return;
-        }
-        if (head.patientId == patientId){
-            head = head.next;
-        }
-        Node curr = head.next;
-        Node prev = head;
-        while (curr!= null){
-
-            if (curr.next == null && curr.patientId == patientId){
-                prev.next = null;
-            }
-            if (curr.patientId == patientId){
-                prev.next = curr.next;
-                curr = curr.next;
-            }
-            curr = curr.next;
-            prev = prev.next;
-        }
-        System.out.println("No patient found with ID: " +patientId);
-
-    }
-
-
-    public void sortPatients() {
-
-        head = quickSort(head);
-    }
-
-    private Node quickSort(Node start) {
-        if (start == null || start.next == null) {
-            return start;
-        }
-
-        Node[] partitioned = partition(start);
-        Node leftSorted = quickSort(partitioned[0]);
-        Node rightSorted = quickSort(partitioned[2]);
-
-        return merge(leftSorted, partitioned[1], rightSorted);
-    }
-
-    private Node[] partition(Node head) {
-        Node pivot = head;
-        Node leftHead = null, leftTail = null;
-        Node rightHead = null, rightTail = null;
-
-        Node current = head.next;
-
-        while (current != null) {
-            if (current.PatientName.compareTo(pivot.PatientName) <= 0) {
-                if (leftHead == null) {
-                    leftHead = current;
-                    leftTail = current;
-                } else {
-                    leftTail.next = current;
-                    leftTail = current;
-                }
-            } else {
-                if (rightHead == null) {
-                    rightHead = current;
-                    rightTail = current;
-                } else {
-                    rightTail.next = current;
-                    rightTail = current;
-                }
-            }
-            current = current.next;
-        }
-
-        if (leftTail != null) {
-            leftTail.next = null;
-        }
-        if (rightTail != null) {
-            rightTail.next = null;
-        }
-
-        pivot.next = null;
-        return new Node[]{leftHead, pivot, rightHead};
-    }
-
-    private Node merge(Node left, Node pivot, Node right) {
-        if (left == null) {
-            pivot.next = right;
-            return pivot;
-        }
-
-        Node tail = left;
-        while (tail.next != null) {
-            tail = tail.next;
-        }
-        tail.next = pivot;
-        pivot.next = right;
-
-        return left;
-    }
     public void DisplayDataOfPatient() {
         if (isEmpty()) {
             System.out.println("No patients in the list.");
@@ -559,7 +377,7 @@ class PatientManagement {
         }
     }
 
-    public void loadFromFile() {
+        public void loadFromFile() {
         try {
             File file = new File("patientData.txt");
 

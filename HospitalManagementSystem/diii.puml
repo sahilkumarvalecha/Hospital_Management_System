@@ -1,0 +1,104 @@
+@startuml
+' Class: Staff
+class Staff {
+    - PatientManagement pm
+    - DoctorManagement dm
+    + Staff()
+    + void addNewPatient(String name, int age, String phone, String gender, String healthIssue)
+    + void updatePatientInfo(int patientId, String name, int age, String gender, String healthIssue)
+    + void addNewDoctor(String name, String specialization, String[] availability, int number)
+    + void updateDoctorInfo(int id, String name, String specialization, String[] availability, int number)
+    + void searchPatient(int patientId)
+    + void viewAllDoctors()
+    + void searchDoctor(String specialization)
+}
+
+' Class: PatientManagement
+class PatientManagement {
+    - patients: List<Patient>
+    + void insertPatient(String name, int age, String phone, String gender, String healthIssue)
+    + void updatePatientInfo(int patientId, String name, int age, String gender, String healthIssue)
+    + Node SearchPatient(int patientId)
+    + void loadFromFile()
+    + void DisplayDataOfPatient()
+    + void updatePatientBill(int id, double amount)
+    + void validateAge(int age)
+    + void validatePhoneNumber(String phone)
+}
+
+' Class: DoctorManagement
+class DoctorManagement {
+    - doctors: List<Doctor>
+    - specializationKeywords: List<String>
+    + void addDoctor(String name, String specialization, String[] availability, int number)
+    + void updateDoctor(int id, String name, String specialization, String[] availability, int number)
+    + void displayAllDoctors()
+    + void searchDoctorBySpecialization(String specialization)
+    + void loadFromFile()
+    + String findSpecialization(List<String> keywords, String issue)
+    + void displayDoctorAccToHealthIssue(String issue)
+    + Doctor searchDoctorById(int id)
+}
+
+' Class: AppointmentManager
+class AppointmentManager {
+    - appointments: List<Appointment>
+    - appointmentCount: int
+    + void loadFromFile()
+    + void writeAppointmentsInFile(int patientId, int doctorId, String timeSlot)
+    + void deleteAppointment(int patientId)
+    + Appointment searchAppointmentByDoctorId(int doctorId)
+    + void resize()
+}
+
+' Class: Patient
+class Patient {
+    - int id
+    - String name
+    - int age
+    - String phone
+    - String gender
+    - String healthIssue
+    - String prescription
+    + String getPatientHealthIssue()
+}
+
+' Class: Doctor
+class Doctor {
+    - int id
+    - String name
+    - String specialization
+    - String[] availability
+    - int Number
+    + Doctor(int id, String name, String specialization, String[] availability, int number)
+    + String toString()
+}
+
+' Class: Appointment
+class Appointment {
+    - int patientId
+    - int doctorId
+    - String timeSlot
+}
+
+' Class: Main
+class Main {
+    - Scanner scanner
+    - PatientManagement pm
+    - DoctorManagement dm
+    - AppointmentManager am
+    - Staff st
+    - int choice1
+    - boolean isMainMenu
+    + static void main(String[] args)
+}
+
+' Relationships
+Staff --> PatientManagement : manages
+Staff --> DoctorManagement : manages
+Staff --> AppointmentManager : coordinates
+DoctorManagement *-- Doctor : "manages"
+PatientManagement *-- Patient : "manages"
+AppointmentManager *-- Appointment : "manages"
+Main --> Staff : uses
+@enduml

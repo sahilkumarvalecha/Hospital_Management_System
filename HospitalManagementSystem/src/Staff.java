@@ -17,10 +17,6 @@ public class Staff {
     public void updateDoctorInfo(int id, String name, String specialization, String[] availability ,int number){
         dm.updateDoctor(id, name, specialization, availability, number);
     }
-    public void viewAllPatients(){
-        pm.sortPatients();
-        pm.DisplayDataOfPatient();
-    }
     public void searchPatient(int patientId){
         pm.SearchPatient(patientId);
     }
@@ -29,9 +25,6 @@ public class Staff {
     }
     public void searchDoctor(String specialization){
         dm.searchDoctorBySpecialization(specialization);
-    }
-    public void showBillForPatient(int patientID){
-        pm.showBill(patientID);
     }
 
 }

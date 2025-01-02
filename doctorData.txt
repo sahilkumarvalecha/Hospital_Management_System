@@ -1,0 +1,33 @@
+ID:1, Name:Dr. Shazaiab Ahmed Khan, Specialization:Cardiologist, Number:12345, Availability:Monday 10AM;Tuesday 2PM
+ID:2, Name:Dr. Abid Ali, Specialization:Cardiologist, Number:23456, Availability:Wednesday 3PM;Saturday 1PM
+ID:3, Name:Dr. Fakharudin Soomro, Specialization:Cardiologist, Number:34567, Availability:Monday 1PM;Thursday 5PM
+ID:4, Name:Dr. Ali Mobin Memon, Specialization:Dermatologist, Number:45678, Availability:Monday 9AM;Thursday 4PM
+ID:5, Name:Dr. Usama Khalid, Specialization:Dermatologist, Number:56789, Availability:Tuesday 10AM;Friday 3PM;Saturday 11AM
+ID:6, Name:Dr. Asim Riaz, Specialization:Dermatologist, Number:67890, Availability:Wednesday 2PM;Sunday 9AM
+ID:7, Name:Dr. Faria Jameel, Specialization:Dermatologist, Number:78901, Availability:Monday 11AM;Friday 1PM
+ID:8, Name:Dr. Faiz Alam, Specialization:Neurologist, Number:89012, Availability:Wednesday 10AM;Thursday 2PM;Friday 1PM
+ID:9, Name:Dr. Owais Khan, Specialization:Neurologist, Number:90123, Availability:Monday 8AM;Friday 5PM
+ID:10, Name:Dr. Fatima Samar, Specialization:Orthopedist, Number:10112, Availability:Tuesday 9AM;Thursday 3PM;Saturday 10AM
+ID:11, Name:Dr. Waqar Ahmed Malik, Specialization:Orthopedist, Number:11223, Availability:Monday 7AM;Friday 12PM
+ID:12, Name:Dr. Syed Hurrar Rizvi, Specialization:Orthopedist, Number:12334, Availability:Wednesday 6PM;Sunday 2PM
+ID:13, Name:Dr. Sadia Aziz, Specialization:Gastroenterologist, Number:13445, Availability:Monday 12PM;Thursday 6PM;Sunday 8AM
+ID:14, Name:Dr. Sameeha Arslan, Specialization:Gastroenterologist, Number:14556, Availability:Tuesday 10AM;Saturday 2PM
+ID:15, Name:Dr. Osama Khan, Specialization:Gastroenterologist, Number:15667, Availability:Monday 4PM;Thursday 2PM;Sunday 3PM
+ID:16, Name:Dr. Sanaullah Khan, Specialization:Gastroenterologist, Number:16778, Availability:Tuesday 11AM;Friday 9AM
+ID:17, Name:Dr. Umer Khan, Specialization:Gastroenterologist, Number:17889, Availability:Wednesday 8AM;Saturday 5PM
+ID:18, Name:Dr. Asher Tariq, Specialization:Pulmonologist, Number:18990, Availability:Monday 1PM;Tuesday 11AM;Friday 9AM
+ID:19, Name:Dr. Syed H Hassan, Specialization:Pulmonologist, Number:19001, Availability:Wednesday 3PM;Saturday 10AM
+ID:20, Name:Dr. Muhammad Hasan, Specialization:Endocrinologist, Number:20112, Availability:Monday 5PM;Thursday 11AM
+ID:21, Name:Dr. Sarang Ahmed, Specialization:Endocrinologist, Number:21221, Availability:Tuesday 6PM;Friday 7AM;Sunday 4PM
+ID:22, Name:Dr. Sarwat Tamer, Specialization:Endocrinologist, Number:22332, Availability:Monday 8AM;Wednesday 2PM;Saturday 1PM
+ID:23, Name:Dr. Dorithy, Specialization:Endocrinologist, Number:23443, Availability:Tuesday 10AM;Thursday 9AM;Sunday 11AM
+ID:24, Name:Dr. Naheed Milburi, Specialization:Pediatrician, Number:24554, Availability:Monday 3PM;Thursday 5PM;Saturday 12PM
+ID:25, Name:Dr. Mubeen Ahmed, Specialization:Pediatrician, Number:25665, Availability:Tuesday 8AM;Friday 10AM
+ID:26, Name:Dr. Waseen Rauf, Specialization:Pediatrician, Number:26776, Availability:Wednesday 7AM;Sunday 2PM
+ID:27, Name:Dr. Fiaz Ahemd, Specialization:Dentist, Number:27887, Availability:Monday 12PM;Friday 8AM
+ID:28, Name:Dr. Zohra Hoti, Specialization:Dentist, Number:28998, Availability:Wednesday 10AM;Saturday 5PM
+ID:29, Name:Dr. Ali Fatmi, Specialization:Psychiatrist, Number:29009, Availability:Monday 6PM;Wednesday 8AM;Saturday 4PM
+ID:30, Name:Dr. Qambar Ali, Specialization:Psychiatrist, Number:30101, Availability:Tuesday 3PM;Thursday 6PM;Sunday 7AM
+ID:31, Name:Dr. Saqib Sadiq, Specialization:Psychiatrist, Number:31212, Availability:Monday 9AM;Friday 11AM
+ID:32, Name:Dr. Sobia Muhammad Rizwan, Specialization:Psychiatrist, Number:32323, Availability:Tuesday 2PM;Thursday 4PM
+ID:33, Name:Dr. Danish Hassan, Specialization:Psychiatrist, Number:33434, Availability:Wednesday 1PM;Saturday 3PM
