@@ -15,7 +15,7 @@ public class Node { // Static variable to keep track of the ID across instances
     String prescription;
     Node next;
 
-    public Node(int patientId, String PatientName, int PatientAge, String PatientPhoneNUM, String PatientGender, String PatientHealthIssue,String Prescription) {
+    public Node(int patientId, String PatientName, int PatientAge, String PatientPhoneNUM, String PatientGender, String PatientHealthIssue, String prescription) {
         this.patientId = patientId;
         this.PatientName = PatientName;
         this.PatientAge = PatientAge;
@@ -25,7 +25,7 @@ public class Node { // Static variable to keep track of the ID across instances
         this.appointmentDetails = "";
         this.billAmount = 0.0;
         this.diagnosis = null;
-        this.prescription = Prescription;
+        this.prescription = prescription;
         this.next = null;
     }
     public String getPatientHealthIssue() {
@@ -199,7 +199,6 @@ class PatientManagement {
                 writer.write("Patient Gender: " + current.PatientGender + " , ");
                 writer.write("Patient health issue: " + current.PatientHealthIssue + " , ");
                 writer.write("Patient Bill : " + current.billAmount);
-                writer.write("Patient Bill : " + current.prescription);
 
                 writer.newLine();
                 current = current.next;
@@ -362,166 +361,117 @@ class PatientManagement {
     }
 
     public void loadFromFile() {
-        try {
-            File file = new File("patientData.txt");
+            try {
+                File file = new File("patientData.txt");
 
-            if (!file.exists()) {
-                System.out.println("No previous patient data found.");
-                return;
-            }
-            // Clear the list before loading
-            head = null;
-            last = null;
-
-            FileReader fr = new FileReader(file);
-            BufferedReader br = new BufferedReader(fr);
-            String line;
-
-            int patientId = 0;
-            String patientName = "";
-            int patientAge = 0;
-            String patientPhoneNumber = "";
-            String patientGender = "";
-            String patientHealthIssue = "";
-            double patientBill = 0.0;
-            String prescription = "";
-
-            while ((line = br.readLine()) != null) {
-
-
-                // Split the line by commas to extract individual data
-                String[] parts = line.split(",");
-
-                for (String part : parts) {
-                    String[] keyValue = part.split(":");
-                    String key = keyValue[0].trim();
-                    String value = keyValue[1].trim();
-
-                    // Match the key and assign the value to the corresponding variable
-                    switch (key) {
-                        case "Patient ID":
-                            patientId = Integer.parseInt(value);
-                            break;
-                        case "Patient name":
-                            patientName = value;
-                            break;
-                        case "Patient age":
-                            patientAge = Integer.parseInt(value);
-                            break;
-                        case "Patient phone number":
-                            patientPhoneNumber = value;
-                            break;
-                        case "Patient Gender":
-                            patientGender = value;
-                            break;
-                        case "Patient health issue":
-                            patientHealthIssue = value;
-                            break;
-                        case "Patient Bill":
-                            patientBill = Double.parseDouble(value);
-                            break;
-                        case "Prescription":
-                            prescription = value;
-                            break;
-                    }
+                if (!file.exists()) {
+                    System.out.println("No previous patient data found.");
+                    return;
                 }
+                // Clear the list before loading
+                head = null;
+                last = null;
 
+                FileReader fr = new FileReader(file);
+                BufferedReader br = new BufferedReader(fr);
+                String line;
 
-                // Manually extracting the data by looking for the position of ':'
-                //int startIndex, endIndex;
-                //String id = "", name = "", age = "", phone = "", gender = "", healthIssue = "", bill = "", prescription = "";
+                while ((line = br.readLine()) != null) {
+                    // Manually extracting the data by looking for the position of ':'
+                    int startIndex, endIndex;
+                    String id = "", name = "", age = "", phone = "", gender = "", healthIssue = "", bill = "", prescription = "";
 
-                // Extract patient ID
-                //startIndex = line.indexOf(":") + 1;
-                //endIndex = line.indexOf(",", startIndex);
-                //id = line.substring(startIndex, endIndex).trim();
+                    // Extract patient ID
+                    startIndex = line.indexOf(":") + 1;
+                    endIndex = line.indexOf(",", startIndex);
+                    id = line.substring(startIndex, endIndex).trim();
 
-                // Extract Name
-                //startIndex = line.indexOf(":", endIndex) + 1;
-                //endIndex = line.indexOf(",", startIndex);
-                //name = line.substring(startIndex, endIndex).trim();
+                    // Extract Name
+                    startIndex = line.indexOf(":", endIndex) + 1;
+                    endIndex = line.indexOf(",", startIndex);
+                    name = line.substring(startIndex, endIndex).trim();
 
-                // Extract Age
-                //startIndex = line.indexOf(":", endIndex) + 1;
-                //endIndex = line.indexOf(",", startIndex);
-                //age = line.substring(startIndex, endIndex).trim();
+                    // Extract Age
+                    startIndex = line.indexOf(":", endIndex) + 1;
+                    endIndex = line.indexOf(",", startIndex);
+                    age = line.substring(startIndex, endIndex).trim();
 
-                // Extract Phone
-                //startIndex = line.indexOf(":", endIndex) + 1;
-                //endIndex = line.indexOf(",", startIndex);
-                //phone = line.substring(startIndex, endIndex).trim();
+                    // Extract Phone
+                    startIndex = line.indexOf(":", endIndex) + 1;
+                    endIndex = line.indexOf(",", startIndex);
+                    phone = line.substring(startIndex, endIndex).trim();
 
-                // Extract Gender
-                //startIndex = line.indexOf(":", endIndex) + 1;
-                //endIndex = line.indexOf(",", startIndex);
-                //gender = line.substring(startIndex, endIndex).trim();
+                    // Extract Gender
+                    startIndex = line.indexOf(":", endIndex) + 1;
+                    endIndex = line.indexOf(",", startIndex);
+                    gender = line.substring(startIndex, endIndex).trim();
 
-                // Extract Health Issue
-                //startIndex = line.indexOf(":", endIndex) + 1;
-                //endIndex = line.indexOf(",", startIndex);
-                //healthIssue = line.substring(startIndex, endIndex).trim();
+                    // Extract Health Issue
+                    startIndex = line.indexOf(":", endIndex) + 1;
+                    endIndex = line.indexOf(",", startIndex);
+                    healthIssue = line.substring(startIndex, endIndex).trim();
 
-                // Extract Bill Amount (Last value after last comma)
-               // startIndex = line.lastIndexOf(":") + 1;
-               // bill = line.substring(startIndex).trim();
+                    // Extract Bill Amount (Last value after last comma)
+                    startIndex = line.lastIndexOf(":") + 1;
+                    bill = line.substring(startIndex).trim();
 
-                // Extract Prescription
-                /*startIndex = line.indexOf(":", endIndex) + 1;
-                endIndex = line.indexOf(",", startIndex);
-                if (endIndex == -1) {  // If no comma, take till the end of the line
-                    prescription = line.substring(startIndex).trim();
-                } else {
+                    // Extract Prescription
+                    startIndex = line.indexOf(":", endIndex) + 1;
+                    endIndex = line.indexOf(",", startIndex);
                     prescription = line.substring(startIndex, endIndex).trim();
-                }
+                    if (endIndex == -1) {  // If no comma, take till the end of the line
+                        prescription = line.substring(startIndex).trim();
+                    } else {
+                        prescription = line.substring(startIndex, endIndex).trim();
+                    }
 
-                // Manually converting strings to integers and double
-                int patientId = 0;
-                for (int i = 0; i < id.length(); i++) {
-                    patientId = patientId * 10 + (id.charAt(i) - '0');
-                }
+                    // Manually converting strings to integers and double
+                    int patientId = 0;
+                    for (int i = 0; i < id.length(); i++) {
+                        patientId = patientId * 10 + (id.charAt(i) - '0');
+                    }
 
-                int patientAge = 0;
-                for (int i = 0; i < age.length(); i++) {
-                    patientAge = patientAge * 10 + (age.charAt(i) - '0');
-                }
+                    int patientAge = 0;
+                    for (int i = 0; i < age.length(); i++) {
+                        patientAge = patientAge * 10 + (age.charAt(i) - '0');
+                    }
 
-                double billAmount = 0;
-                boolean isDecimal = false;
-                double decimalFactor = 0.1;
-                for (int i = 0; i < bill.length(); i++) {
-                    char c = bill.charAt(i);
-                    if (c == '.') {
-                        isDecimal = true;
-                    } else if (c >= '0' && c <= '9') {
-                        if (isDecimal) {
-                            billAmount += (c - '0') * decimalFactor;
-                            decimalFactor /= 10;
-                        } else {
-                            billAmount = billAmount * 10 + (c - '0');
+                    double billAmount = 0;
+                    boolean isDecimal = false;
+                    double decimalFactor = 0.1;
+                    for (int i = 0; i < bill.length(); i++) {
+                        char c = bill.charAt(i);
+                        if (c == '.') {
+                            isDecimal = true;
+                        } else if (c >= '0' && c <= '9') {
+                            if (isDecimal) {
+                                billAmount += (c - '0') * decimalFactor;
+                                decimalFactor /= 10;
+                            } else {
+                                billAmount = billAmount * 10 + (c - '0');
+                            }
                         }
                     }
-                }*/
 
-                // Create a new patient node and add it to the list
-                Node newNode = new Node(patientId, patientName, patientAge, patientPhoneNumber, patientGender, patientHealthIssue, prescription);
-                //newNode.billAmount = billAmount;
-                //newNode.prescription = prescription;
+                    // Create a new patient node and add it to the list
+                    Node newNode = new Node(patientId, name, patientAge, phone, gender, healthIssue, prescription);
+                    newNode.billAmount = billAmount;
 
-                if (isEmpty()) {
-                    head = newNode;
-                    last = newNode;
-                } else {
-                    last.next = newNode;
-                    last = newNode;
+                    if (isEmpty()) {
+                        head = newNode;
+                        last = newNode;
+                    } else {
+                        last.next = newNode;
+                        last = newNode;
+                    }
                 }
+                br.close();
+            } catch (IOException e) {
+                System.out.println("Error reading from file: " + e.getMessage());
+                e.printStackTrace();
             }
-            br.close();
-        } catch (IOException e) {
-            System.out.println("Error reading from file: " + e.getMessage());
-            e.printStackTrace();
         }
+
+
+
     }
-
-
-
-}
