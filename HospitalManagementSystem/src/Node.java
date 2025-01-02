@@ -340,6 +340,26 @@ class PatientManagement {
             throw new Exception("Invalid phone number: must be a 10-digit number");
         } System.out.println("Valid phone number: " + phoneNumber);
     }
+    public void validatePhoneNumber(int phoneNumber) throws Exception {
+        // Convert the phone number to a string to check the number of digits
+        String phoneNumberStr = Integer.toString(phoneNumber);
+
+        // Check if the phone number has exactly 10 digits
+        if (phoneNumberStr.length() != 10) {
+            throw new Exception("Invalid phone number: must be a 10-digit number");
+        }
+
+        // Check if the phone number contains only digits
+        for (int i = 0; i < phoneNumberStr.length(); i++) {
+            char c = phoneNumberStr.charAt(i);
+            if (c < '0' || c > '9') {
+                throw new Exception("Invalid phone number: contains non-numeric characters");
+            }
+        }
+
+        System.out.println("Valid phone number: " + phoneNumber);
+    }
+
 
     /*  public void bookAppointment(int patientId, String appointmentDetails){
   =======

@@ -200,6 +200,7 @@ class doctorManagement{
         saveToFile();
     }
     public void updateDoctor(int id, String name, String specialization, String[] availability ,int number){
+        loadFromFile();
         for (Doctor doctor:doctors){
             if (doctor != null && doctor.id == id){
                 doctor.doctorName = name;
@@ -210,9 +211,76 @@ class doctorManagement{
                 saveToFile();
                 return;
             }
-
-            System.out.println("Doctor with ID " +id+ " not found ");
         }
+        System.out.println("Doctor with ID " +id+ " not found ");
+    }
+    public static void heapSort(Doctor[] doctors) {
+        int n = doctors.length;
+
+        // Build the max heap
+        for (int i = n / 2 - 1; i >= 0; i--) {
+            heapify(doctors, n, i);
+        }
+
+        // Extract elements from the heap one by one
+        for (int i = n - 1; i > 0; i--) {
+            // Swap the root (largest) with the last element
+            Doctor temp = doctors[0];
+            doctors[0] = doctors[i];
+            doctors[i] = temp;
+
+            // Heapify the reduced heap
+            heapify(doctors, i, 0);
+        }
+    }
+
+    private static void heapify(Doctor[] doctors, int n, int i) {
+        int largest = i; // Initialize largest as root
+        int left = 2 * i + 1; // Left child
+        int right = 2 * i + 2; // Right child
+
+        // Check if the left child is not null and larger than root
+        if (left < n && doctors[left] != null && doctors[largest] != null &&
+                compareStrings(doctors[left].doctorName, doctors[largest].doctorName) > 0) {
+            largest = left;
+        }
+
+        // Check if the right child is not null and larger than the largest so far
+        if (right < n && doctors[right] != null && doctors[largest] != null &&
+                compareStrings(doctors[right].doctorName, doctors[largest].doctorName) > 0) {
+            largest = right;
+        }
+
+        // If largest is not root
+        if (largest != i) {
+            // Swap
+            Doctor swap = doctors[i];
+            doctors[i] = doctors[largest];
+            doctors[largest] = swap;
+
+            // Recursively heapify the affected subtree
+            heapify(doctors, n, largest);
+        }
+    }
+
+
+    // Custom string comparison function
+    private static int compareStrings(String s1, String s2) {
+        int minLength = Math.min(s1.length(), s2.length());
+        for (int i = 0; i < minLength; i++) {
+            if (s1.charAt(i) < s2.charAt(i)) {
+                return -1;
+            } else if (s1.charAt(i) > s2.charAt(i)) {
+                return 1;
+            }
+        }
+        // If strings are identical up to the length of the shorter one
+        if (s1.length() < s2.length()) {
+            return -1;
+        } else if (s1.length() > s2.length()) {
+            return 1;
+        }
+        return 0;
     }
     public static String toLowerCase(String input) {
         char[] result = new char[input.length()];
@@ -358,20 +426,22 @@ class doctorManagement{
             return;
         }
         boolean doctorPresent = false;
+        heapSort(doctors);
         for (Doctor doctor : doctors) {
             if (doctor != null) {
                 doctorPresent = true;
-                System.out.print(" Doctor name: " + doctor.doctorName +
-                        ", Doctor specialization: " + doctor.specialization +
-                        ", Doctor number: " + doctor.Number +
-                        ", Doctor availability timing: ");
-                if (doctor.availability != null) {
-                    for (String time : doctor.availability) {
-                        System.out.print(", " + time);
-                    }
-                } else {
-                    System.out.print(" No availability info.");
-                }
+                System.out.println(doctor);
+//                System.out.print(" Doctor name: " + doctor.doctorName +
+//                        ", Doctor specialization: " + doctor.specialization +
+//                        ", Doctor number: " + doctor.Number +
+//                        ", Doctor availability timing: ");
+//                if (doctor.availability != null) {
+//                    for (String time : doctor.availability) {
+//                        System.out.print(", " + time);
+//                    }
+//                } else {
+//                    System.out.print(" No availability info.");
+//                }
                 System.out.println();
             }
         }

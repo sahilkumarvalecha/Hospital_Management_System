@@ -340,8 +340,18 @@ public class Main {
                                                 scanner.nextLine();
                                                 System.out.println("Enter New patient Name: ");
                                                 String newName = scanner.nextLine();
-                                                System.out.println("Enter New patient age: ");
-                                                int newAge = scanner.nextInt();
+                                                int newAge = 0;
+                                                while (true) {
+                                                    try {
+                                                        System.out.print("Enter Patient Age: ");
+                                                        newAge = scanner.nextInt();
+                                                        pm.validateAge(newAge); // Assuming this method throws an exception for invalid age
+                                                        break; // Exit the loop if age is valid
+                                                    } catch (Exception e) {
+                                                        System.out.println(e.getMessage()); // Print validation error message
+                                                        scanner.nextLine(); // Clear invalid input
+                                                    }
+                                                }
                                                 System.out.println("Enter New patient gender: ");
                                                 String newGender = scanner.nextLine();
                                                 System.out.println("Enter New patient health Issue: ");
@@ -354,9 +364,20 @@ public class Main {
                                                 scanner.nextLine();
                                                 System.out.print("Enter Doctor specialization: ");
                                                 String specialization = scanner.nextLine();
-                                                System.out.print("Enter Doctor Phone Number: ");
-                                                int number = scanner.nextInt();
+                                                int number = 0;
+                                                while (true) {
+                                                    try {
+                                                        System.out.print("Enter Doctor Phone Number: ");
+                                                        number = scanner.nextInt();
+                                                        pm.validatePhoneNumber(number); // Assuming this method throws an exception for invalid age
+                                                        break; // Exit the loop if age is valid
+                                                    } catch (Exception e) {
+                                                        System.out.println(e.getMessage()); // Print validation error message
+                                                        scanner.nextLine(); // Clear invalid input
+                                                    }
+                                                }
                                                 scanner.nextLine(); // Consume newline
+
                                                 int slotCount = 0; // Initialize slot count
                                                 boolean isValidSlotCount = false;
                                                 while (!isValidSlotCount) {
@@ -382,13 +403,11 @@ public class Main {
                                             case 4:
                                                 System.out.print("Enter Doctor Id to update: ");
                                                 int docId = scanner.nextInt();
-                                                scanner.nextLine();
-                                                System.out.println("Enter New patient Name: ");
+                                                System.out.println("Enter New Doctor Name: ");
                                                 String docName = scanner.nextLine();
                                                 System.out.println("Enter Doctor Specialization: ");
                                                 String docInfo = scanner.nextLine();
-                                                System.out.println("Enter Doctor Availability: ");
-                                                String docSchedule = scanner.nextLine();
+                                                System.out.println("Enter Doctor Availability ");
                                                 System.out.println("How many slots you want to add in your Schedule?");
                                                 slotCount = scanner.nextInt();
                                                 scanner.nextLine();
@@ -404,8 +423,19 @@ public class Main {
                                                     }
 
                                                 }
-                                                System.out.println("Enter Doctor Contact Number: ");
-                                                int phoneNum = scanner.nextInt();
+                                                int phoneNum = 0;
+                                                while (true) {
+                                                    try {
+                                                        System.out.print("Enter Doctor Phone Number: ");
+                                                        phoneNum = scanner.nextInt();
+                                                        pm.validatePhoneNumber(phoneNum); // Assuming this method throws an exception for invalid age
+                                                        break; // Exit the loop if age is valid
+                                                    } catch (Exception e) {
+                                                        System.out.println(e.getMessage()); // Print validation error message
+                                                        scanner.nextLine(); // Clear invalid input
+                                                    }
+                                                }
+                                                scanner.nextLine(); // Consume newline
                                                 st.updateDoctorInfo(docId, docName, docInfo, availability, phoneNum);
                                                 System.out.println("Doctor added successfully!");
 
