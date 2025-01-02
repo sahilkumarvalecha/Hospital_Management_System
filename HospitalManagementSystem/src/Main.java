@@ -145,11 +145,16 @@ public class Main {
                                             case 2:
                                                 System.out.print("Enter patient Id to view appointment details: ");
                                                 int searchingPatientId = scanner.nextInt();
+                                                boolean appointmentFound = false;
                                                 for (Appointment appointment : am.appointments) {
                                                     if (appointment != null && appointment.patientId == searchingPatientId) {
+                                                        appointmentFound = true;
                                                         System.out.println("You have a appointment with " +dm.searchDoctorById(appointment.doctorId).doctorName+ " at:" +appointment.timeSlot);
                                                         break;
                                                     }
+                                                }
+                                                if (!appointmentFound){
+                                                    System.out.println(" No Appointment ");
                                                 }
                                                 break;
                                             case 3:

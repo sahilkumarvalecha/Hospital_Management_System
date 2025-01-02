@@ -1,1 +1,1 @@
-Patient ID: 1 , Patient name: silo , Patient age: 12 , Patient phone number: 1234321234 , Patient Gender: f , Patient health issue: sfs , Patient Bill : 0.0 , Prescription: null
+Patient ID: 1 , Patient name: silo , Patient age: 12 , Patient phone number: 1234321234 , Patient Gender: f , Patient health issue: cough , Patient Bill : 0.0

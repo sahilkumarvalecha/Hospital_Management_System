@@ -360,7 +360,7 @@ class PatientManagement {
         }
     }
 
-        public void loadFromFile() {
+    public void loadFromFile() {
         try {
             File file = new File("patientData.txt");
 
@@ -418,7 +418,11 @@ class PatientManagement {
                 // Extract Prescription
                 startIndex = line.indexOf(":", endIndex) + 1;
                 endIndex = line.indexOf(",", startIndex);
-                prescription = line.substring(startIndex, endIndex).trim();
+                if (endIndex == -1) {  // If no comma, take till the end of the line
+                    prescription = line.substring(startIndex).trim();
+                } else {
+                    prescription = line.substring(startIndex, endIndex).trim();
+                }
 
                 // Manually converting strings to integers and double
                 int patientId = 0;
@@ -447,6 +451,7 @@ class PatientManagement {
                         }
                     }
                 }
+
                 // Create a new patient node and add it to the list
                 Node newNode = new Node(patientId, name, patientAge, phone, gender, healthIssue);
                 newNode.billAmount = billAmount;
@@ -466,6 +471,7 @@ class PatientManagement {
             e.printStackTrace();
         }
     }
+
 
 
 }
